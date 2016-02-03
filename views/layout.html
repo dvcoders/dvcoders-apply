@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  {% for item in css %}
+  <link rel="stylesheet" href="{{ css }}">
+  {% endfor %}
   <title>{% if title %}{{ title }} | {% endif %}{{ app.title }}</title>
 </head>
 <body>

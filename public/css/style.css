@@ -4,6 +4,14 @@ progress {
   vertical-align: middle;
 }
 
+input:valid {
+  border: 1px solid green;
+}
+
+input:invalid {
+  border: 1px solid ;
+}
+
 .header {
   padding-top: 18rem;
   padding-bottom: 15rem;
@@ -23,3 +31,4 @@ progress {
   background-color: #b25232;
   border-color: #b25232;
 }
+

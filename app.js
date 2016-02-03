@@ -1,6 +1,7 @@
 'use strict';
 
 let express = require('express');
+let bodyParser = require('body-parser');
 let nunjucks = require('nunjucks');
 let app = express();
 let config = require('./config.js');
@@ -13,6 +14,8 @@ app.set('port', process.env.PORT || config.server.port || 3000);
 app.locals.app = config.client;
 
 app.use(express.static('public'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ 'extended': true }));
 
 // Create the logging utility
 let logger = require('./logger.js')();

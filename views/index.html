@@ -15,19 +15,19 @@
         <div class="row form-row">
           <div class="six columns offset-by-three">
             <label for="firstName">*First Name</label>
-            <input class="u-full-width" type="text" placeholder="Daniel" name="firstName" id="firstName" pattern="[a-zA-Z\-\s]+">
+            <input class="u-full-width" type="text" placeholder="Daniel" name="firstName" id="firstName" pattern="[a-zA-Z\-\s]+" data-required>
           </div>
         </div>
         <div class="row form-row">
           <div class="six columns offset-by-three">
             <label for="lastName">*Last Name</label>
-            <input class="u-full-width" type="text" placeholder="Awai" name="lastName" id ="lastName" pattern="[a-zA-Z\+\s]+">
+            <input class="u-full-width" type="text" placeholder="Awai" name="lastName" id ="lastName" pattern="[a-zA-Z\-\s]+" data-required>
           </div>
         </div>
         <div class="row form-row">
           <div class="six columns offset-by-three">
             <label for="email">*Email</label>
-            <input class="u-full-width" type="email" placeholder="daniel@awai.com" name="email" id ="email" pattern="^([\w\.\-_\+]+)?\w+@[\w-_]+(\.\w+){1,}$">
+            <input class="u-full-width" type="email" placeholder="daniel@awai.com" name="email" id ="email" pattern="^([\w\.\-_\+]+)?\w+@[\w-_]+(\.\w+){1,}$" data-required>
             <label>
               <input type="checkbox" name="mailchimp" id="mailchimp" checked><small> Subscribe to dvcoders mailling list: meeting updates & events</small>
             </label>
@@ -146,4 +146,18 @@
       </form>
     </div>
   </div>
+
+  <script>
+  window.addEventListener('submit', function(e) {
+    var inputs = document.querySelectorAll('input[data-required]');
+    Array.prototype.slice.call(inputs).forEach(function(el) {
+      if (el.value === '') {
+        e.preventDefault();
+        e.stopPropagation();
+        el.setAttribute('required', true);
+      }
+    });
+    console.log(e);
+  });
+  </script>
 {% endblock %}

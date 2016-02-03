@@ -12,6 +12,8 @@ app.set('port', process.env.PORT || config.server.port || 3000);
 // Allow templates to access config.client settings
 app.locals.app = config.client;
 
+app.use(express.static('public'));
+
 // Create the logging utility
 let logger = require('./logger.js')();
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   {% for item in css %}
-  <link rel="stylesheet" href="{{ css }}">
+  <link rel="stylesheet" href="{{ item }}">
   {% endfor %}
   <title>{% if title %}{{ title }} | {% endif %}{{ app.title }}</title>
 </head>

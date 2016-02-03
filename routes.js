@@ -4,7 +4,7 @@ module.exports = (app, logger) => {
   app.get('/', (req, res) => {
     res.render('index.html', {
       'title': 'Join',
-      'css': []
+      'css': ['css/normalize.css', 'css/skeleton.css', 'css/style.css']
     });
   });
 };

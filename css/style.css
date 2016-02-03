@@ -1,3 +1,9 @@
+progress {
+  margin-left: 10px;
+  width: 100px;
+  vertical-align: middle;
+}
+
 .header {
   padding-top: 18rem;
   padding-bottom: 15rem;
@@ -13,7 +19,7 @@
   background-color: #b25232;
 }
 
-progress {
-  margin-left: 10px;
-  width: 100px;
+#join-button {
+  background-color: #b25232;
+  border-color: #b25232;
 }

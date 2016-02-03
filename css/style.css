@@ -1,0 +1,19 @@
+.header {
+  padding-top: 18rem;
+  padding-bottom: 15rem;
+  text-align: center;
+  border-bottom: 1px #eee solid;
+}
+
+.form-row {
+  padding-top: 4rem;
+}
+
+#join {
+  background-color: #b25232;
+}
+
+progress {
+  margin-left: 10px;
+  width: 100px;
+}

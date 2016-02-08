@@ -5,7 +5,7 @@ let userSchema = new Schema({
   firstName: String,
   lastName: String,
   email: String,
-  mailchump: Boolean,
+  mailchimp: Boolean,
   description: {
     id: Schema.Types.ObjectId,
     ref: 'survey'

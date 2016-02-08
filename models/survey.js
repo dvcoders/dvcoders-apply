@@ -1,11 +1,11 @@
-let mongoose = requre('mongoose');
-let Schema = mongoose.Schema;
+let mongoose = requre('mongoose')
+let Schema = mongoose.Schema
 
 let surveySchema =  new Schema({
   "experience": [String],
   "interests": [String],
   "more-interests": String,
-  "projects": [String]
+  "projects": [String],
   "more-projects": [String],
   "events": [String],
   "more-events": [String]

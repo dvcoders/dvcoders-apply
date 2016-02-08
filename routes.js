@@ -20,6 +20,6 @@ module.exports = (app, logger) => {
   app.post('/join', (req, res) => {
     console.log(req.body);
     // logger.info(req.body);
-    res.send('Nice forms bro'); 
+    res.status(200).end(); 
   });
 };

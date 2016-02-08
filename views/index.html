@@ -2,6 +2,14 @@
 
 {% block body %}
 
+<span class="overlay-container">
+  <div class="overlay"></div>
+  <div class="message-container">
+    <h1>Thank you</h1>
+    <p>We look forward to seeing you at our next meeting!</p>
+  </div>
+</span>
+
 <section id="join" class="u-full-width header">
     <h1><b>Join</b> dvcoders</h1>
     <h5>Explore real world software development technologies.</h5>
@@ -160,7 +168,7 @@
 
         <div class="row form-row">
           <div class="six columns offset-by-three">
-            <input class="button-primary" id="join-button" type="submit" value="Join" >
+            <input class="button-primary" id="join-button" type="submit" value="Join">
           </div>
         </div>
 
@@ -179,6 +187,7 @@
       }
     });
     console.log(e);
+    document.querySelector('.overlay-container').style.display = 'block';
   });
   </script>
 {% endblock %}

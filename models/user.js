@@ -1,5 +1,5 @@
-let mongoose = require('mongoose');
-let Schema = mongoose.Schema;
+let mongoose = require('mongoose')
+let Schema = mongoose.Schema
 
 let userSchema = new Schema({
   firstName: String,
@@ -10,4 +10,4 @@ let userSchema = new Schema({
     id: Schema.Types.ObjectId,
     ref: 'survey'
   }
-});
+})

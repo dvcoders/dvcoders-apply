@@ -6,6 +6,15 @@ let nunjucks = require('nunjucks');
 let app = express();
 let config = require('./config.js');
 let utils = require('./utils.js');
+let db = require('./database');
+
+db(err => {
+  if (err) {
+    return console.error('connection error:', err);
+  }
+
+  console.log('Connected to MongoDB!');
+});
 
 // Set the server's port
 app.set('port', process.env.PORT || config.server.port || 3000);

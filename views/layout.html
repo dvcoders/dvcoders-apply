@@ -10,4 +10,9 @@
 <body>
   {% block body %}{% endblock %}
 </body>
+<footer>
+  {% for item in javascripts %}
+    <script type="text/javascript" src="{{ item }}"></script>
+  {% endfor %}
+</footer>
 </html>

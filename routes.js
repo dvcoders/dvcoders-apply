@@ -18,7 +18,8 @@ module.exports = (app, logger) => {
 
   // The form API call
   app.post('/join', (req, res) => {
-    logger.info(req.body);
-    res.redirect('/success');
+    console.log(req.body);
+    // logger.info(req.body);
+    res.send('Nice forms bro'); 
   });
 };

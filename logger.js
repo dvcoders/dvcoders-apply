@@ -1,14 +1,15 @@
-'use strict';
+'use strict'
 
-let winston = require('winston');
+let winston = require('winston')
 
 // Creates and returns a new logging instance
 module.exports = () => (new winston.Logger({
   'transports': [new winston.transports.Console({
-      'level': 'debug',
-      'handleExceptions': false,
-      'json': false,
-      'colorize': true
-    })],
+    'level': 'debug',
+    'handleExceptions': false,
+    'json': false,
+    'colorize': true
+  })],
   'exitOnError': false
-}));
+}))
+

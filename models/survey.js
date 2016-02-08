@@ -9,4 +9,4 @@ let surveySchema = new Schema({
   'more-projects': [String],
   'events': [String],
   'more-events': [String]
-});
+})

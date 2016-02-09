@@ -1,7 +1,8 @@
 'use strict'
 
 let mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/dvcoders')
+let config = require('./config').mongodb
+mongoose.connect(`mongodb://${config.address}/${config.database}`)
 let db = mongoose.connection
 
 module.exports = cb => {

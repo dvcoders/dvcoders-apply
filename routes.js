@@ -3,9 +3,10 @@ module.exports = (app, logger) => {
   app.get('/', (req, res) => {
     res.render('index.html', {
       'title': 'Join',
-      'css': ['css/normalize.css', 'css/skeleton.css', 'css/style.css']
-    })
-  })
+      'css': ['css/normalize.css', 'css/skeleton.css', 'css/style.css'],
+      'javascripts': ['javascripts/jquery-1.12.0.min.js', 'javascripts/index.js']
+    });
+  });
 
   // The success page
   app.get('/success', (req, res) => {

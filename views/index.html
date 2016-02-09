@@ -2,6 +2,14 @@
 
 {% block body %}
 
+<span class="overlay-container">
+  <div class="overlay"></div>
+  <div class="message-container">
+    <h1>Thank you</h1>
+    <p>We look forward to seeing you at our next meeting!</p>
+  </div>
+</span>
+
 <section id="join" class="u-full-width header">
     <h1><b>Join</b> dvcoders</h1>
     <h5>Explore real world software development technologies.</h5>
@@ -10,7 +18,7 @@
   </section>
   <div class="container">
     <div class="row">
-      <form action="/join" method="POST" >
+      <form action="/join" method="POST">
 
         <div class="row form-row">
           <div class="six columns offset-by-three">
@@ -168,25 +176,11 @@
 
         <div class="row form-row">
           <div class="six columns offset-by-three">
-            <input class="button-primary" id="join-button" type="submit" value="Join" >
+            <input class="button-primary" id="join-button" type="submit" value="Join">
           </div>
         </div>
 
       </form>
     </div>
   </div>
-
-  <script>
-  window.addEventListener('submit', function(e) {
-    var inputs = document.querySelectorAll('input[data-required]');
-    Array.prototype.slice.call(inputs).forEach(function(el) {
-      if (el.getAttribute('pattern') ? !(new RegExp(el.getAttribute('pattern')).test(el.value)) : el.value === '') {
-        e.preventDefault();
-        e.stopPropagation();
-        el.setAttribute('required', true);
-      }
-    });
-    console.log(e);
-  });
-  </script>
 {% endblock %}

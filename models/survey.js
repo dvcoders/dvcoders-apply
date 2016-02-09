@@ -1,3 +1,5 @@
+'use strict'
+
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
@@ -10,3 +12,5 @@ let surveySchema = new Schema({
   'events': [String],
   'more-events': [String]
 })
+
+module.exports = mongoose.model('Survey', surveySchema)

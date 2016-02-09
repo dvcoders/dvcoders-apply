@@ -8,14 +8,6 @@ let config = require('./config.js')
 let utils = require('./utils.js')
 let db = require('./database')
 
-db(err => {
-  if (err) {
-    return console.error('connection error:', err)
-  }
-
-  console.log('Connected to MongoDB!')
-})
-
 // Set the server's port
 app.set('port', process.env.PORT || config.server.port || 3000)
 
@@ -32,7 +24,9 @@ let logger = require('./logger.js')()
 // Pass express data through the logger
 app.use(require('morgan')('dev', {
   'stream': {
-    'write': (message, encoding) => { logger.info(message) }
+    'write': (message, encoding) => {
+      logger.info(message)
+    }
   }
 }))
 
@@ -43,10 +37,19 @@ nunjucks.configure('views', {
   'express': app
 })
 
-// Create routing
-require('./routes.js')(app, logger)
+// Connect to MongoDB and start web server on success
+db(err => {
+  if (err) {
+    return console.error('MongoDB connection error:', err)
+  }
 
-// Start the server
-let server = app.listen(app.get('port'), () => {
-  logger.info(`Server running on port ${server.address().port}`)
+  console.log('Connected to MongoDB!')
+
+  // Create routing
+  require('./routes.js')(app, logger)
+
+  // Start the server
+  let server = app.listen(app.get('port'), () => {
+    logger.info(`Server running on port ${server.address().port}`)
+  })
 })

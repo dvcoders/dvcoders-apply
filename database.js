@@ -7,5 +7,9 @@ let db = mongoose.connection
 
 module.exports = cb => {
   db.on('error', cb)
-  db.once('open', cb)
+  db.once('open', () => {
+    // Register the models in Mongoose
+    require('./models')
+    cb(null)
+  })
 }

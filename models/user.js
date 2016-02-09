@@ -1,3 +1,5 @@
+'use strict'
+
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
@@ -7,7 +9,9 @@ let userSchema = new Schema({
   email: String,
   mailchimp: Boolean,
   description: {
-    id: Schema.Types.ObjectId,
-    ref: 'survey'
+    type: Schema.ObjectId,
+    ref: 'Survey'
   }
 })
+
+module.exports = mongoose.model('User', userSchema)

@@ -26,10 +26,10 @@ module.exports = (app, logger) => {
     let body = req.body
     console.log(body)
 
-    User.findOne({
+    User.count({
       email: body.email
-    }).exec().then(user => {
-      if (user) {
+    }).exec().then(count => {
+      if (count > 0) {
         return res.send('Email already in system')
       }
 

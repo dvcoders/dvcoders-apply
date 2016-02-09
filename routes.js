@@ -1,3 +1,9 @@
+'use strict'
+
+let mongoose = require('mongoose')
+let User = mongoose.model('User')
+let Survey = mongoose.model('Survey')
+
 module.exports = (app, logger) => {
   // The main page
   app.get('/', (req, res) => {
@@ -17,8 +23,37 @@ module.exports = (app, logger) => {
 
   // The form API call
   app.post('/join', (req, res) => {
-    console.log(req.body)
-    // logger.info(req.body);
-    res.send('Nice forms bro')
+    let body = req.body
+    console.log(body)
+
+    User.findOne({
+      email: body.email
+    }).exec().then(user => {
+      if (user) {
+        return res.send('Email already in system')
+      }
+
+      // Create and save Survey first b/c User depends on it
+      new Survey({
+        'experience': body.experience,
+        'interests': body.interests,
+        'more-interests': body['more-interests'],
+        'projects': body.projects,
+        'more-projects': body['more-projects'],
+        'events': body.events,
+        'more-events': body['more-events']
+      }).save().then(survey => {
+        new User({
+          firstName: body.firstName,
+          lastName: body.lastName,
+          email: body.email,
+          mailchimp: !!body.mailchimp,
+          description: survey
+        }).save().then(user => {
+          console.log(user)
+          res.send('Nice forms bro')
+        })
+      })
+    })
   })
 }

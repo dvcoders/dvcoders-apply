@@ -1,8 +1,12 @@
+'use strict'
+
+let https = require('https')
+let config = require('./config.js')
+
 module.exports = (app, logger) => {
-  var https = require('https')          // temporary fix, why won't it work when included in app.js?
-  
   // The main page
   app.get('/', (req, res) => {
+    console.log(config.github.apiKey)
     res.render('index.html', {
       'title': 'Join',
       'css': ['css/normalize.css', 'css/skeleton.css', 'css/style.css'],
@@ -22,7 +26,7 @@ module.exports = (app, logger) => {
   app.post('/join', (req, res) => {
     var githubUsername = req.body.githubUsername;
     
-    addToOrg(githubUsername, (err, statusCode) => {
+    addToTeam(githubUsername, (err, statusCode) => {
       if (err) {
         console.log(err)
         res.status(500).end()
@@ -40,7 +44,7 @@ module.exports = (app, logger) => {
     })
   })
   
-  function addToOrg(githubUsername, cb) {
+  function addToTeam(githubUsername, cb) {
     // sends and invite to the passed username to join the "developer" team
     // (error, statusCode) is passed to callback function
     var options = {
@@ -48,10 +52,10 @@ module.exports = (app, logger) => {
       // use environment variable to store api key as recommended by github
       // run `export githubApiKey=key` before running nodemon
       path: '/teams/1679886/memberships/' + githubUsername 
-        + '?access_token=' + process.env.githubApiKey,
+        + '?access_token=' + config.github.apiKey,
       method: 'PUT',
       headers: {
-        'User-Agent': 'shankwiler'
+        'User-Agent': config.github.userAgent
       }
     }
     

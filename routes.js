@@ -6,7 +6,6 @@ let config = require('./config.js')
 module.exports = (app, logger) => {
   // The main page
   app.get('/', (req, res) => {
-    console.log(config.github.apiKey)
     res.render('index.html', {
       'title': 'Join',
       'css': ['css/normalize.css', 'css/skeleton.css', 'css/style.css'],
@@ -23,25 +22,27 @@ module.exports = (app, logger) => {
   })
 
   // The form API call
-  app.post('/join', (req, res) => {
-    var githubUsername = req.body.githubUsername;
+  app.post('/join', (req, res, next) => {
+    let githubUsername = req.body.githubUsername;
     
     addToTeam(githubUsername, (err, statusCode) => {
       if (err) {
         console.log(err)
         res.status(500).end()
       }
-      else {
-        if (statusCode == 200)
-          res.status(200).end()
-        else if (statusCode === 404)
-          res.status(404).end()
-        else
-          res.status(500).end() 
-        // if api sends back anything other than 200 or 404, something
-        // must be wrong with our server or github's api
+      else if (statusCode === 404) {
+        res.status(404).end()
       }
+      else if (statusCode === 200)
+        next()
+      // if api sends back anything other than 200 or 404, something
+      // must be wrong with our server or github's api
+      else
+        res.status(500).end()
     })
+  }, (req, res, next) => {
+    // mongoose additions can go here
+    res.send('Nice forms bro')
   })
   
   function addToTeam(githubUsername, cb) {

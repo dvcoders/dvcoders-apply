@@ -2,6 +2,16 @@
 
 let https = require('https')
 let config = require('./config.js')
+let mongoose = require('mongoose')
+let User = mongoose.model('User')
+let Survey = mongoose.model('Survey')
+
+let ajaxResponse = {
+  'success': '',
+  'emailValid': '',
+  'githubValid': '',
+  'errorMessage': ''
+}
 
 module.exports = (app, logger) => {
   // The main page
@@ -13,18 +23,13 @@ module.exports = (app, logger) => {
     })
   })
 
-  // The success page
-  app.get('/success', (req, res) => {
-    res.render('success.html', {
-      'title': 'Success',
-      'css': []
-    })
-  })
-
   // The form API call
   app.post('/join', (req, res, next) => {
+
+    // Github actions
     let githubUsername = req.body.githubUsername
     addToTeam(githubUsername, (err, statusCode) => {
+
       if (err) {
         console.log(err)
         res.status(500).end()
@@ -39,18 +44,54 @@ module.exports = (app, logger) => {
       }
     })
   }, (req, res, next) => {
-    // mongoose additions can go here
-    res.send('Nice forms bro')
-  })
+
+    // Mongoose actions
+    let body = req.body
+    logger.info(`Request body ${body}`)
+    User.count({
+      email: body.email
+    }).exec().then(count => {
+      if (count > 0) {
+        logger.error('Email already in system')
+        ajaxResponse.success = false
+        ajaxResponse.emailValid = false
+        ajaxResponse.errorMessage = 'Email already registered'
+        return res.json(ajaxResponse)
+      }
+
+      // Create and save Survey first b/c User depends on it
+      new Survey({
+        'experience': body.experience,
+        'interests': body.interests,
+        'more-interests': body['more-interests'],
+        'projects': body.projects,
+        'more-projects': body['more-projects'],
+        'events': body.events,
+        'more-events': body['more-events']
+      }).save().then(survey => {
+        new User({
+          firstName: body.firstName,
+          lastName: body.lastName,
+          email: body.email,
+          mailchimp: !!body.mailchimp,
+          description: survey
+        }).save().then(user => {
+          console.log(user)
+          ajaxResponse.success = true
+          ajaxResponse.emailValid = true
+          res.json(ajaxResponse)
+        })
+      })
+    })
 
   function addToTeam (githubUsername, cb) {
     // sends and invite to the passed username to join the "developer" team
     // (error, statusCode) is passed to callback function
     let options = {
       hostname: 'api.github.com',
-      // use environment variable to store api key as recommended by github
-      // run `export githubApiKey=key` before running nodemon
-      path: '/teams/1679886/memberships/' + githubUsername + '?access_token=' + config.github.apiKey,
+      // Use environment variable to store api key as recommended by github
+      // Run `export githubApiKey=key` before running nodemon
+      path: `/teams/1679886/memberships/${githubUsername}?access_token=${config.github.apiKey}`,
       method: 'PUT',
       headers: {
         'User-Agent': config.github.userAgent
@@ -60,10 +101,10 @@ module.exports = (app, logger) => {
     let req = https.request(options, (res) => {
       cb(null, res.statusCode)
     })
-    console.log(options)
     req.end()
     req.on('error', (e) => {
-      cb('error : ' + e)
+      // request ended with an error (github or us, doens't matter) internal server error
+      cb(e, 500)
     })
   }
 }

@@ -1,4 +1,14 @@
 /* globals $ */
+function scrollToElement (element) {
+  $('html, body').animate({
+    scrollTop: element.offset().top
+  }, 1000)
+}
+
+function renderError (el, message) {
+  console.log('Appending:' + message)
+  el.append(' - ' + message)
+}
 
 $(function () {
   window.addEventListener('submit', function (e) {
@@ -25,12 +35,23 @@ $(function () {
         type: 'POST',
         data: $('form').serialize()
       }).done(function (data) {
-        document.querySelector('.overlay-container').style.display = 'block'
-        document.querySelector('#join-button').style.display = 'none'
-        // To clear fields, so no annoying closing messages displayed by browser
-        document.querySelector('form').reset()
-      }).fail(function () {
-        document.querySelector('#githubUsername').style.border = '1px solid red'
+        var errorElement
+        if (!(data.success && data.emailValid)) {
+          errorElement = $('label[for=email]')
+          console.log(data.errorMessage)
+          scrollToElement(errorElement, data.errorMessage)
+          renderError(errorElement, data.errorMessage)
+        } else if (!(data.success && data.emailValid)) {
+          errorElement = $('label[for=githubUsername]')
+          console.log(data.errorMessage)
+          scrollToElement(errorElement)
+          renderError(errorElement, data.errorMessage)
+        } else {
+          $('.overlay-container').show()
+          $('#join-button').hide()
+          // To clear fields, so no annoying closing messages displayed by browser
+          document.querySelector('form').reset()
+        }
       })
     }
   })

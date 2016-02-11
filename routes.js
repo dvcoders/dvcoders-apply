@@ -30,13 +30,13 @@ module.exports = (app, logger) => {
     if (githubUsername === '') {
       next()
     } else {
-      addToTeam(req, res, next, githubUsername, githubResponseHandler)
+      addToTeam(res, next, githubUsername, githubResponseHandler)
     }
   }, (req, res, next) => {
 
     // Mongoose actions
     let body = req.body
-    logger.info(`Request body ${body}`)
+    console.log('Request body: ' + req.body.firstName)
 
     // Create and save Survey first b/c User depends on it
     new Survey({
@@ -52,35 +52,28 @@ module.exports = (app, logger) => {
         firstName: body.firstName,
         lastName: body.lastName,
         email: body.email,
-        mailchimp: !!body.mailchimp,
+        mailchimp: body.mailchimp,
         description: survey
       }).save().then(user => {
         // Successful save and invitation
-        console.log(user)
+        logger.info(`Successful invited ${user}`)
         ajaxResponse.success = true
         ajaxResponse.emailValid = true
         return res.json(ajaxResponse)
-      }, error => {
-        logger.error('Some user data already exists - need to find out which one')
-        console.log(error.toJSON())
+      }, err => {
+        console.log(err)
+        if (err.code === 11000) {
+          logger.error('Duplicated email')
+          ajaxResponse.success = false
+          ajaxResponse.emailValid = false
+          ajaxResponse.errorMessage = 'Email already registered'
+          return res.status(400).json(ajaxResponse)
+        }
       })
     })
-
-    // User.count({
-    //   email: body.email
-    // }).exec().then(count => {
-    //   if (count > 0) {
-    //     logger.error('Email already in system')
-    //     ajaxResponse.success = false
-    //     ajaxResponse.emailValid = false
-    //     ajaxResponse.errorMessage = 'Email already registered'
-    //     res.status(400)
-    //     return res.json(ajaxResponse)
-    //   }
-    // })
   })
 
-  let githubResponseHandler = (req, res, next, err, statusCode) => {
+  let githubResponseHandler = (res, next, err, statusCode) => {
     if (err) {
       logger.error(err)
       res.status(500).end()
@@ -105,7 +98,7 @@ module.exports = (app, logger) => {
     }
   }
 
-  let addToTeam = (req, res, next, githubUsername, cb) => {
+  let addToTeam = (res, next, githubUsername, cb) => {
     // sends and invite to the passed username to join the "developer" team
     // (error, statusCode) is passed to callback function
     let options = {
@@ -119,14 +112,14 @@ module.exports = (app, logger) => {
       }
     }
 
-    let ghRep = https.request(options, (ghRes) => {
-      cb(req, res, next, null, ghRes.statusCode)
+    let ghReq = https.request(options, (ghRes) => {
+      cb(res, next, null, ghRes.statusCode)
     })
-    ghRep.end()
-    ghRep.on('error', (e) => {
+    ghReq.end()
+    ghReq.on('error', (e) => {
       // request ended with an error (github or us, doens't matter) internal server error
       logger.error(`Github request error: ${e}`)
-      cb(req, res, next, e, 500)
+      cb(res, next, e, 500)
     })
   }
 }

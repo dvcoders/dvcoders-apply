@@ -15,8 +15,8 @@ app.set('port', process.env.PORT || config.server.port || 3000)
 app.locals.app = config.client
 
 app.use(express.static('public'))
-app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ 'extended': true }))
+app.use(bodyParser.json())
 
 // Create the logging utility
 let logger = require('./logger.js')()

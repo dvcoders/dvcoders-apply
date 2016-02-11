@@ -28,6 +28,11 @@ module.exports = (app, logger) => {
 
     // Github actions
     let githubUsername = req.body.githubUsername
+
+    if (githubUsername === '') {
+      next()
+    }
+
     addToTeam(githubUsername, (err, statusCode) => {
 
       if (err) {

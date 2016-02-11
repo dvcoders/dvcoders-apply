@@ -24,7 +24,11 @@ module.exports = (app, logger) => {
   // The form API call
   app.post('/join', (req, res, next) => {
     let githubUsername = req.body.githubUsername;
-    
+
+    if (githubUsername === '') {
+      next()
+    }
+
     addToTeam(githubUsername, (err, statusCode) => {
       if (err) {
         console.log(err)

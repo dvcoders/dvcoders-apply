@@ -7,15 +7,21 @@ let userSchema = new Schema({
   firstName: {
     type: String,
     maxLength: 35,
+    required: true,
+    unique: true,
     match: [/[a-zA-Z\-\s]+/, 'Please enter valid name characters']
   },
   lastName: {
     type: String,
     maxLength: 35,
+    required: true,
+    unique: true,
     match: [/[a-zA-Z\-\s]+/, 'Please enter valid name characters']
   },
   email: {
     type: String,
+    required: true,
+    unique: true,
     match: [/^([\w\.\-_\+]+)?\w+@[\w-_]+(\.\w+){1,}$/, 'Please enter a valid email']
   },
   mailchimp: Boolean,

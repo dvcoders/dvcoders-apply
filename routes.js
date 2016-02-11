@@ -25,26 +25,34 @@ module.exports = (app, logger) => {
 
   // The form API call
   app.post('/join', (req, res, next) => {
-
     // Github actions
     let githubUsername = req.body.githubUsername
-
     if (githubUsername === '') {
       next()
     } else {
       addToTeam(githubUsername, (err, statusCode) => {
-
         if (err) {
-          console.log(err)
+          logger.error(err)
           res.status(500).end()
         } else if (statusCode === 404) {
-          res.status(404).end()
+          // Username could not be found
+          res.status(400)
+          ajaxResponse.success = false
+          ajaxResponse.githubValid = false
+          ajaxResponse.errorMessage = 'Github username could not be found'
+          return res.json(ajaxResponse)
         } else if (statusCode === 200) {
+          logger.info('Successfully invited user')
           next()
         } else {
           // if api sends back anything other than 200 or 404, something
           // must be wrong with our server or github's api
-          res.status(500).end()
+          logger.error(`Github API responded with ${statusCode}`)
+          res.status(500)
+          ajaxResponse.success = false
+          ajaxResponse.githubValid = false
+          ajaxResponse.errorMessage = 'Internal server error'
+          return res.json(ajaxResponse)
         }
       })
     }
@@ -61,6 +69,7 @@ module.exports = (app, logger) => {
         ajaxResponse.success = false
         ajaxResponse.emailValid = false
         ajaxResponse.errorMessage = 'Email already registered'
+        res.status(400)
         return res.json(ajaxResponse)
       }
 
@@ -81,16 +90,17 @@ module.exports = (app, logger) => {
           mailchimp: !!body.mailchimp,
           description: survey
         }).save().then(user => {
+          // Successful save and invitation
           console.log(user)
           ajaxResponse.success = true
           ajaxResponse.emailValid = true
-          res.json(ajaxResponse)
+          return res.json(ajaxResponse)
         })
       })
     })
   })
 
-  function addToTeam (githubUsername, cb) {
+  let addToTeam = (githubUsername, cb) => {
     // sends and invite to the passed username to join the "developer" team
     // (error, statusCode) is passed to callback function
     let options = {

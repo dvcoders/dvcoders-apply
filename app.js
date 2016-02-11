@@ -37,15 +37,22 @@ nunjucks.configure('views', {
   'express': app
 })
 
+if (config.github.apiKey && config.github.userAgent) {
+  logger.info('Github API Key & User Agent values set')
+} else {
+  logger.error(`No Github API Key OR User Agent variables set.\nPlease set the following enviornment variables:\nexport GITHUB_API_KEY=key & export GITHUB_USER_AGENT=userAgent`)
+
+  // Exit the process if no API Key or User Agent is available
+  process.exit()
+}
+
 // Connect to MongoDB and start web server on success
 db(err => {
   if (err) {
     return console.error('MongoDB connection error:', err)
   }
-
-  console.log('Connected to MongoDB!')
-
-  // Create routing
+  logger.info('Connected to MongoDB!')
+  // Create routing after database is connected
   require('./routes.js')(app, logger)
 
   // Start the server

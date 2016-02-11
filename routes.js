@@ -110,6 +110,7 @@ module.exports = (app, logger) => {
     req.end()
     req.on('error', (e) => {
       // request ended with an error (github or us, doens't matter) internal server error
+      logger.error(`Github request error: ${e}`)
       cb(e, 500)
     })
   }

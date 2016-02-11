@@ -16,6 +16,6 @@ exports.client = {
 }
 
 exports.github = {
-  'apiKey': process.env.GITHUB_API_KEY,
-  'userAgent': process.env.GITHUB_USER_AGENT
+  'apiKey': process.env.GITHUB_API_KEY || null,
+  'userAgent': process.env.GITHUB_USER_AGENT || null
 }

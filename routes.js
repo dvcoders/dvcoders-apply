@@ -31,23 +31,23 @@ module.exports = (app, logger) => {
 
     if (githubUsername === '') {
       next()
+    } else {
+      addToTeam(githubUsername, (err, statusCode) => {
+
+        if (err) {
+          console.log(err)
+          res.status(500).end()
+        } else if (statusCode === 404) {
+          res.status(404).end()
+        } else if (statusCode === 200) {
+          next()
+        } else {
+          // if api sends back anything other than 200 or 404, something
+          // must be wrong with our server or github's api
+          res.status(500).end()
+        }
+      })
     }
-
-    addToTeam(githubUsername, (err, statusCode) => {
-
-      if (err) {
-        console.log(err)
-        res.status(500).end()
-      } else if (statusCode === 404) {
-        res.status(404).end()
-      } else if (statusCode === 200) {
-        next()
-      } else {
-        // if api sends back anything other than 200 or 404, something
-        // must be wrong with our server or github's api
-        res.status(500).end()
-      }
-    })
   }, (req, res, next) => {
 
     // Mongoose actions
@@ -88,6 +88,7 @@ module.exports = (app, logger) => {
         })
       })
     })
+  })
 
   function addToTeam (githubUsername, cb) {
     // sends and invite to the passed username to join the "developer" team

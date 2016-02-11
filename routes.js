@@ -37,43 +37,47 @@ module.exports = (app, logger) => {
     // Mongoose actions
     let body = req.body
     logger.info(`Request body ${body}`)
-    User.count({
-      email: body.email
-    }).exec().then(count => {
-      if (count > 0) {
-        logger.error('Email already in system')
-        ajaxResponse.success = false
-        ajaxResponse.emailValid = false
-        ajaxResponse.errorMessage = 'Email already registered'
-        res.status(400)
-        return res.json(ajaxResponse)
-      }
 
-      // Create and save Survey first b/c User depends on it
-      new Survey({
-        'experience': body.experience,
-        'interests': body.interests,
-        'more-interests': body['more-interests'],
-        'projects': body.projects,
-        'more-projects': body['more-projects'],
-        'events': body.events,
-        'more-events': body['more-events']
-      }).save().then(survey => {
-        new User({
-          firstName: body.firstName,
-          lastName: body.lastName,
-          email: body.email,
-          mailchimp: !!body.mailchimp,
-          description: survey
-        }).save().then(user => {
-          // Successful save and invitation
-          console.log(user)
-          ajaxResponse.success = true
-          ajaxResponse.emailValid = true
-          return res.json(ajaxResponse)
-        })
+    // Create and save Survey first b/c User depends on it
+    new Survey({
+      'experience': body.experience,
+      'interests': body.interests,
+      'more-interests': body['more-interests'],
+      'projects': body.projects,
+      'more-projects': body['more-projects'],
+      'events': body.events,
+      'more-events': body['more-events']
+    }).save().then(survey => {
+      new User({
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email,
+        mailchimp: !!body.mailchimp,
+        description: survey
+      }).save().then(user => {
+        // Successful save and invitation
+        console.log(user)
+        ajaxResponse.success = true
+        ajaxResponse.emailValid = true
+        return res.json(ajaxResponse)
+      }, error => {
+        logger.error('Some user data already exists - need to find out which one')
+        console.log(error.toJSON())
       })
     })
+
+    // User.count({
+    //   email: body.email
+    // }).exec().then(count => {
+    //   if (count > 0) {
+    //     logger.error('Email already in system')
+    //     ajaxResponse.success = false
+    //     ajaxResponse.emailValid = false
+    //     ajaxResponse.errorMessage = 'Email already registered'
+    //     res.status(400)
+    //     return res.json(ajaxResponse)
+    //   }
+    // })
   })
 
   let githubResponseHandler = (req, res, next, err, statusCode) => {

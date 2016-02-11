@@ -8,14 +8,12 @@ let userSchema = new Schema({
     type: String,
     maxLength: 35,
     required: true,
-    unique: true,
     match: [/[a-zA-Z\-\s]+/, 'Please enter valid name characters']
   },
   lastName: {
     type: String,
     maxLength: 35,
     required: true,
-    unique: true,
     match: [/[a-zA-Z\-\s]+/, 'Please enter valid name characters']
   },
   email: {

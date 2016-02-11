@@ -4,11 +4,26 @@ let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
 let userSchema = new Schema({
-  firstName: String,
-  lastName: String,
-  email: String,
+  firstName: {
+    type: String,
+    maxLength: 35,
+    match: [/[a-zA-Z\-\s]+/, 'Please enter valid name characters']
+  },
+  lastName: {
+    type: String,
+    maxLength: 35,
+    match: [/[a-zA-Z\-\s]+/, 'Please enter valid name characters']
+  },
+  email: {
+    type: String,
+    match: [/^([\w\.\-_\+]+)?\w+@[\w-_]+(\.\w+){1,}$/, 'Please enter a valid email']
+  },
   mailchimp: Boolean,
-  github: String,
+  github: {
+    type: String,
+    maxLength: 35,
+    match: [/[a-zA-Z\-\s]+/, 'Please enter valid name characters']
+  },
   description: {
     type: Schema.ObjectId,
     ref: 'Survey'

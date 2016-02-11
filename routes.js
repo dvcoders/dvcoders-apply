@@ -4,6 +4,13 @@ let mongoose = require('mongoose')
 let User = mongoose.model('User')
 let Survey = mongoose.model('Survey')
 
+let ajaxResponse = {
+  'success': '',
+  'emailValid': '',
+  'githubValid': '',
+  'errorMessage': ''
+}
+
 module.exports = (app, logger) => {
   // The main page
   app.get('/', (req, res) => {
@@ -11,27 +18,23 @@ module.exports = (app, logger) => {
       'title': 'Join',
       'css': ['css/normalize.css', 'css/skeleton.css', 'css/style.css'],
       'javascripts': ['javascripts/jquery-1.12.0.min.js', 'javascripts/index.js']
-    });
-  });
-
-  // The success page
-  app.get('/success', (req, res) => {
-    res.render('success.html', {
-      'title': 'Success',
-      'css': []
     })
   })
 
   // The form API call
   app.post('/join', (req, res) => {
     let body = req.body
-    console.log(body)
+    logger.info(body)
 
     User.count({
       email: body.email
     }).exec().then(count => {
       if (count > 0) {
-        return res.send('Email already in system')
+        logger.error('Email already in system')
+        ajaxResponse.success = false
+        ajaxResponse.emailValid = false
+        ajaxResponse.errorMessage = 'Email already registered'
+        return res.json(ajaxResponse)
       }
 
       // Create and save Survey first b/c User depends on it
@@ -52,7 +55,9 @@ module.exports = (app, logger) => {
           description: survey
         }).save().then(user => {
           console.log(user)
-          res.send('Nice forms bro')
+          ajaxResponse.success = true
+          ajaxResponse.emailValid = true
+          res.json(ajaxResponse)
         })
       })
     })

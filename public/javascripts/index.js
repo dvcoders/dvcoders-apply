@@ -15,6 +15,7 @@ $(function () {
     var requiredMatched = true
     e.preventDefault()
     var inputs = document.querySelectorAll('input[data-required]')
+    var githubUsername = document.querySelector('#githubUsername')
     Array.prototype.slice.call(inputs).forEach(function (el) {
       if (el.getAttribute('pattern') ? !(new RegExp(el.getAttribute('pattern')).test(el.value)) : el.value === '') {
         e.stopPropagation()
@@ -22,6 +23,12 @@ $(function () {
         requiredMatched = false
       }
     })
+
+    if (githubUsername.value !== '' && !(new RegExp(githubUsername.getAttribute('pattern')).test(githubUsername.value))) {
+      e.stopPropagation()
+      requiredMatched = false
+    }
+
     if (requiredMatched) {
       $.ajax({
         url: '/join',

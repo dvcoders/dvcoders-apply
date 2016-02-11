@@ -14,3 +14,8 @@ exports.mongodb = {
 exports.client = {
   'title': 'dvcoders'
 }
+
+exports.github = {
+  'apiKey': process.env.GITHUB_API_KEY,
+  'userAgent': process.env.GITHUB_USER_AGENT
+}

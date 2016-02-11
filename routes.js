@@ -1,5 +1,7 @@
 'use strict'
 
+let https = require('https')
+let config = require('./config.js')
 let mongoose = require('mongoose')
 let User = mongoose.model('User')
 let Survey = mongoose.model('Survey')
@@ -22,10 +24,30 @@ module.exports = (app, logger) => {
   })
 
   // The form API call
-  app.post('/join', (req, res) => {
-    let body = req.body
-    logger.info(body)
+  app.post('/join', (req, res, next) => {
 
+    // Github actions
+    let githubUsername = req.body.githubUsername
+    addToTeam(githubUsername, (err, statusCode) => {
+
+      if (err) {
+        console.log(err)
+        res.status(500).end()
+      } else if (statusCode === 404) {
+        res.status(404).end()
+      } else if (statusCode === 200) {
+        next()
+      } else {
+        // if api sends back anything other than 200 or 404, something
+        // must be wrong with our server or github's api
+        res.status(500).end()
+      }
+    })
+  }, (req, res, next) => {
+
+    // Mongoose actions
+    let body = req.body
+    logger.info(`Request body ${body}`)
     User.count({
       email: body.email
     }).exec().then(count => {
@@ -61,5 +83,28 @@ module.exports = (app, logger) => {
         })
       })
     })
-  })
+
+  function addToTeam (githubUsername, cb) {
+    // sends and invite to the passed username to join the "developer" team
+    // (error, statusCode) is passed to callback function
+    let options = {
+      hostname: 'api.github.com',
+      // Use environment variable to store api key as recommended by github
+      // Run `export githubApiKey=key` before running nodemon
+      path: `/teams/1679886/memberships/${githubUsername}?access_token=${config.github.apiKey}`,
+      method: 'PUT',
+      headers: {
+        'User-Agent': config.github.userAgent
+      }
+    }
+
+    let req = https.request(options, (res) => {
+      cb(null, res.statusCode)
+    })
+    req.end()
+    req.on('error', (e) => {
+      // request ended with an error (github or us, doens't matter) internal server error
+      cb(e, 500)
+    })
+  }
 }

@@ -30,31 +30,7 @@ module.exports = (app, logger) => {
     if (githubUsername === '') {
       next()
     } else {
-      addToTeam(githubUsername, (err, statusCode) => {
-        if (err) {
-          logger.error(err)
-          res.status(500).end()
-        } else if (statusCode === 404) {
-          // Username could not be found
-          res.status(400)
-          ajaxResponse.success = false
-          ajaxResponse.githubValid = false
-          ajaxResponse.errorMessage = 'Github username could not be found'
-          return res.json(ajaxResponse)
-        } else if (statusCode === 200) {
-          logger.info('Successfully invited user')
-          next()
-        } else {
-          // if api sends back anything other than 200 or 404, something
-          // must be wrong with our server or github's api
-          logger.error(`Github API responded with ${statusCode}`)
-          res.status(500)
-          ajaxResponse.success = false
-          ajaxResponse.githubValid = false
-          ajaxResponse.errorMessage = 'Internal server error'
-          return res.json(ajaxResponse)
-        }
-      })
+      addToTeam(req, res, next, githubUsername, githubResponseHandler)
     }
   }, (req, res, next) => {
 
@@ -100,7 +76,32 @@ module.exports = (app, logger) => {
     })
   })
 
-  let addToTeam = (githubUsername, cb) => {
+  let githubResponseHandler = (req, res, next, err, statusCode) => {
+    if (err) {
+      logger.error(err)
+      res.status(500).end()
+    } else if (statusCode === 404) {
+      // Username could not be found
+      ajaxResponse.success = false
+      ajaxResponse.githubValid = false
+      ajaxResponse.errorMessage = 'Github username could not be found'
+      return res.status(400).json(ajaxResponse)
+    } else if (statusCode === 200) {
+      logger.info('Successfully invited user')
+      next()
+    } else {
+      // if api sends back anything other than 200 or 404, something
+      // must be wrong with our server or github's api
+      logger.error(`Github API responded with ${statusCode}`)
+      res.status(500)
+      ajaxResponse.success = false
+      ajaxResponse.githubValid = false
+      ajaxResponse.errorMessage = 'Internal server error'
+      return res.json(ajaxResponse)
+    }
+  }
+
+  let addToTeam = (req, res, next, githubUsername, cb) => {
     // sends and invite to the passed username to join the "developer" team
     // (error, statusCode) is passed to callback function
     let options = {
@@ -114,14 +115,14 @@ module.exports = (app, logger) => {
       }
     }
 
-    let req = https.request(options, (res) => {
-      cb(null, res.statusCode)
+    let ghRep = https.request(options, (ghRes) => {
+      cb(req, res, next, null, ghRes.statusCode)
     })
-    req.end()
-    req.on('error', (e) => {
+    ghRep.end()
+    ghRep.on('error', (e) => {
       // request ended with an error (github or us, doens't matter) internal server error
       logger.error(`Github request error: ${e}`)
-      cb(e, 500)
+      cb(req, res, next, e, 500)
     })
   }
 }

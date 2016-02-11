@@ -37,6 +37,7 @@ module.exports = (app, logger) => {
     // Mongoose actions
     let body = req.body
     logger.info(`Request body ${body}`)
+
     User.count({
       email: body.email
     }).exec().then(count => {
@@ -50,29 +51,36 @@ module.exports = (app, logger) => {
       }
 
       // Create and save Survey first b/c User depends on it
-      new Survey({
-        'experience': body.experience,
-        'interests': body.interests,
-        'more-interests': body['more-interests'],
-        'projects': body.projects,
-        'more-projects': body['more-projects'],
-        'events': body.events,
-        'more-events': body['more-events']
-      }).save().then(survey => {
-        new User({
-          firstName: body.firstName,
-          lastName: body.lastName,
-          email: body.email,
-          mailchimp: !!body.mailchimp,
-          description: survey
-        }).save().then(user => {
-          // Successful save and invitation
-          console.log(user)
-          ajaxResponse.success = true
-          ajaxResponse.emailValid = true
-          return res.json(ajaxResponse)
+      // Save entries only if firstName, lastName, and email are present
+      if (body.firstName && body.lastName && body.email) {
+        new Survey({
+          'experience': body.experience,
+          'interests': body.interests,
+          'more-interests': body['more-interests'],
+          'projects': body.projects,
+          'more-projects': body['more-projects'],
+          'events': body.events,
+          'more-events': body['more-events']
+        }).save().then(survey => {
+          new User({
+            firstName: body.firstName,
+            lastName: body.lastName,
+            email: body.email,
+            mailchimp: !!body.mailchimp,
+            description: survey
+          }).save().then(user => {
+            // Successful save and invitation
+            console.log(user)
+            ajaxResponse.success = true
+            ajaxResponse.emailValid = true
+            return res.status(400).json(ajaxResponse)
+          })
         })
-      })
+      } else {
+        ajaxResponse.success = false
+        ajaxResponse.errorMessage = 'Missing first name, last name, or email'
+        return res.status(400).json(ajaxResponse)
+      }
     })
   })
 
@@ -90,14 +98,12 @@ module.exports = (app, logger) => {
       logger.info('Successfully invited user')
       next()
     } else {
-      // if api sends back anything other than 200 or 404, something
-      // must be wrong with our server or github's api
+      // if api sends back anything other than 200 or 404, something must be wrong with our server or Github's API
       logger.error(`Github API responded with ${statusCode}`)
-      res.status(500)
       ajaxResponse.success = false
       ajaxResponse.githubValid = false
       ajaxResponse.errorMessage = 'Internal server error'
-      return res.json(ajaxResponse)
+      return res.status(500).json(ajaxResponse)
     }
   }
 
@@ -106,9 +112,8 @@ module.exports = (app, logger) => {
     // (error, statusCode) is passed to callback function
     let options = {
       hostname: 'api.github.com',
-      // Use environment variable to store api key as recommended by github
-      // Run `export githubApiKey=key` before running nodemon
-      path: `/teams/1679886/memberships/${githubUsername}?access_token=${config.github.apiKey}`,
+      // Make sure that GITHUB_API_KEY is set before running server
+      path: `/teams/1679886/meqmberships/${githubUsername}?access_token=${config.github.apiKey}`,
       method: 'PUT',
       headers: {
         'User-Agent': config.github.userAgent
@@ -120,7 +125,6 @@ module.exports = (app, logger) => {
     })
     ghRep.end()
     ghRep.on('error', (e) => {
-      // request ended with an error (github or us, doens't matter) internal server error
       logger.error(`Github request error: ${e}`)
       cb(req, res, next, e, 500)
     })

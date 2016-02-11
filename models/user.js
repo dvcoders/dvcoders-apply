@@ -8,6 +8,7 @@ let userSchema = new Schema({
   lastName: String,
   email: String,
   mailchimp: Boolean,
+  github: String,
   description: {
     type: Schema.ObjectId,
     ref: 'Survey'

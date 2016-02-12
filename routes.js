@@ -3,6 +3,7 @@
 let https = require('https')
 let config = require('./config.js')
 let mongoose = require('mongoose')
+let querystring = require('querystring')
 let User = mongoose.model('User')
 let Survey = mongoose.model('Survey')
 
@@ -91,10 +92,12 @@ module.exports = (app, logger) => {
           description: survey
         }).save().then(user => {
           // Successful save and invitation
-          console.log(user)
-          ajaxResponse.success = true
-          ajaxResponse.emailValid = true
-          return res.json(ajaxResponse)
+          addToSlack(body.email, () => {
+            console.log(user)
+            ajaxResponse.success = true
+            ajaxResponse.emailValid = true
+            return res.json(ajaxResponse)
+          })
         })
       })
     })
@@ -123,5 +126,37 @@ module.exports = (app, logger) => {
       logger.error(`Github request error: ${e}`)
       cb(e, 500)
     })
+  }
+
+  let addToSlack = (email, cb) => {
+    // sends an invite to join the dvcoders slack channel
+    // (error, statusCode) is passed to the callback, but note that
+    // slack sends a 200 even if the user has already been invited.
+    // also not this api endpoint is "undocumented" and subject to change
+    let data = querystring.stringify({
+      email: email,
+      token: config.slack.token,
+      set_active: true
+    })
+
+    let options = {
+      hostname: 'dvcoders.slack.com',
+      path: '/api/users.admin.invite',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(data)
+      }
+    }
+
+    let req = https.request(options, (res) => {
+      cb(null, res.statusCode)
+    })
+    req.on('error', (err) => {
+      logger.error(`Slack request error: ${err}`)
+      cb(err, 500)
+    })
+    req.write(data)
+    req.end()
   }
 }

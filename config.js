@@ -19,3 +19,7 @@ exports.github = {
   'apiKey': process.env.GITHUB_API_KEY || null,
   'userAgent': process.env.GITHUB_USER_AGENT || null
 }
+
+exports.slack = {
+  'token': process.env.SLACK_TOKEN || null
+}

@@ -38,9 +38,9 @@ nunjucks.configure('views', {
 })
 
 if (config.github.apiKey && config.github.userAgent) {
-  logger.info('Github API Key & User Agent values set')
+  logger.info('Github API Key, User Agent values set, Slack token set')
 } else {
-  logger.error(`No Github API Key OR User Agent variables set.\nPlease set the following enviornment variables:\nexport GITHUB_API_KEY=key & export GITHUB_USER_AGENT=userAgent`)
+  logger.error(`One of the following is not set: Github API Key, User Agent variables, Slack token.\nPlease set the following enviornment variables:\nexport GITHUB_API_KEY=key & export GITHUB_USER_AGENT=userAgent & export SLACK_TOKEN=token`)
 
   // Exit the process if no API Key or User Agent is available
   process.exit()

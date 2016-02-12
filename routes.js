@@ -165,12 +165,12 @@ module.exports = (app, logger) => {
           cb(null, res.statusCode, false)
         }
       })
-      req.on('error', (err) => {
-        logger.error(`Slack request error: ${err}`)
-        cb(err, 500, false)
-      })
-      req.write(data)
-      req.end()
     })
+    req.on('error', (err) => {
+      logger.error(`Slack request error: ${err}`)
+      cb(err, 500, false)
+    })
+    req.write(data)
+    req.end()
   }
 }

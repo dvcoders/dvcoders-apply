@@ -92,10 +92,12 @@ module.exports = (app, logger) => {
           description: survey
         }).save().then(user => {
           // Successful save and invitation
-          addToSlack(body.email, () => {
+          addToSlack(body.email, (err, statusCode, invited) => {
             console.log(user)
             ajaxResponse.success = true
             ajaxResponse.emailValid = true
+            ajaxResponse.slackSuccess = !err && statusCode === 200
+            ajaxResponse.slackInvited = invited
             return res.json(ajaxResponse)
           })
         })
@@ -130,7 +132,7 @@ module.exports = (app, logger) => {
 
   let addToSlack = (email, cb) => {
     // sends an invite to join the dvcoders slack channel
-    // (error, statusCode) is passed to the callback, but note that
+    // (error, statusCode, invited) is passed to the callback, but note that
     // slack sends a 200 even if the user has already been invited.
     // also not this api endpoint is "undocumented" and subject to change
     let data = querystring.stringify({
@@ -150,11 +152,23 @@ module.exports = (app, logger) => {
     }
 
     let req = https.request(options, (res) => {
-      cb(null, res.statusCode)
+      let body = ''
+      res.setEncoding('utf8')
+      res.on('data', (d) => {
+        body += d
+      })
+      res.on('end', () => {
+        let resBody = JSON.parse(body)
+        if (!resBody.ok && resBody.error === 'already_invited') {
+          cb(null, null, true)
+        } else {
+          cb(null, res.statusCode, false)
+        }
+      })
     })
     req.on('error', (err) => {
       logger.error(`Slack request error: ${err}`)
-      cb(err, 500)
+      cb(err, 500, false)
     })
     req.write(data)
     req.end()

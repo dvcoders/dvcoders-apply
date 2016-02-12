@@ -33,47 +33,49 @@ module.exports = (app, logger) => {
       addToTeam(res, next, githubUsername, githubResponseHandler)
     }
   }, (req, res, next) => {
-
     // Mongoose actions
     let body = req.body
     logger.info('Request body:', req.body)
 
-    // Create and save Survey first b/c User depends on it
-    new Survey({
-      'experience': body.experience,
-      'interests': body.interests,
-      'more-interests': body['more-interests'],
-      'projects': body.projects,
-      'more-projects': body['more-projects'],
-      'events': body.events,
-      'more-events': body['more-events']
-    }).save().then(survey => {
-      new User({
-        firstName: body.firstName,
-        lastName: '', // Forcing a required error
-        email: body.email,
-        mailchimp: body.mailchimp,
-        description: survey
-      }).save().then(user => {
-        // Successful save and invitation
-        logger.info(`Successful invited ${user}`)
-        ajaxResponse.success = true
-        ajaxResponse.emailValid = true
-        return res.json(ajaxResponse)
-      }, err => {
-        console.log(err)
-        if (err.code === 11000) {
-          logger.error('Duplicated email')
-          ajaxResponse.success = false
-          ajaxResponse.emailValid = false
-          ajaxResponse.errorMessage = 'Email already registered'
-          return res.status(400).json(ajaxResponse)
-        } else {
-          logger.error(err.message)
-          ajaxResponse.success = false
-          return res.status(500).json(ajaxResponse)
-        }
+    // Create and save User with Survey
+    new User({
+      firstName: body.firstName,
+      lastName: body.lastName, // '', // Forcing a required error
+      email: body.email,
+      mailchimp: !!body.mailchimp // Convert to boolean if not already
+    }).save().then(user => {
+      return new Survey({
+        'experience': body.experience,
+        'interests': body.interests,
+        'more-interests': body['more-interests'],
+        'projects': body.projects,
+        'more-projects': body['more-projects'],
+        'events': body.events,
+        'more-events': body['more-events']
+      }).save().then(survey => {
+        user.description = survey
+        return user.save()
       })
+    }).then(user => {
+      // Successful save and invitation
+      logger.info('Successfully invited', user)
+      ajaxResponse.success = true
+      ajaxResponse.emailValid = true
+      res.json(ajaxResponse)
+    }, err => {
+      console.log(err)
+      if (err.code === 11000) {
+        logger.error('Duplicated email')
+        ajaxResponse.success = false
+        ajaxResponse.emailValid = false
+        ajaxResponse.errorMessage = 'Email already registered'
+        return res.status(400).json(ajaxResponse)
+      } else {
+        logger.error(err.message)
+        ajaxResponse.success = false
+        ajaxResponse.errorMessage = Object.keys(err.errors).map(key => err.errors[key].message).join(' ')
+        return res.status(500).json(ajaxResponse)
+      }
     })
   })
 

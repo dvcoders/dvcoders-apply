@@ -159,8 +159,8 @@ module.exports = (app, logger) => {
       })
       res.on('end', () => {
         let resBody = JSON.parse(body)
-        if (!resBody.ok && resBody.error === 'already_invited') {
-          cb(null, null, true)
+        if (res.status === 200 && !resBody.ok && resBody.error === 'already_invited') {
+          cb(null, 200, true)
         } else {
           cb(null, res.statusCode, false)
         }

@@ -36,7 +36,7 @@ module.exports = (app, logger) => {
 
     // Mongoose actions
     let body = req.body
-    console.log('Request body: ' + req.body)
+    logger.info('Request body:', req.body)
 
     // Create and save Survey first b/c User depends on it
     new Survey({
@@ -50,7 +50,7 @@ module.exports = (app, logger) => {
     }).save().then(survey => {
       new User({
         firstName: body.firstName,
-        lastName: body.lastName,
+        lastName: '', // Forcing a required error
         email: body.email,
         mailchimp: body.mailchimp,
         description: survey
@@ -68,6 +68,10 @@ module.exports = (app, logger) => {
           ajaxResponse.emailValid = false
           ajaxResponse.errorMessage = 'Email already registered'
           return res.status(400).json(ajaxResponse)
+        } else {
+          logger.error(err.message)
+          ajaxResponse.success = false
+          return res.status(500).json(ajaxResponse)
         }
       })
     })

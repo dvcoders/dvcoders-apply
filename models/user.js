@@ -20,13 +20,13 @@ let userSchema = new Schema({
     type: String,
     required: true,
     unique: true,
-    match: [/^([\w\.\-_\+]+)?\w+@[\w-_]+(\.\w+){1,}$/, 'Please enter a valid email']
+    match: [/^([\w\.\-\+]+)?\w+@[\w-]+(\.\w+){1,}$/, 'Please enter a valid email']
   },
   mailchimp: Boolean,
   github: {
     type: String,
     maxLength: 35,
-    match: [/[a-zA-Z\-\s]+/, 'Please enter valid name characters']
+    match: [/[a-zA-Z0-9-]+/, 'Please enter valid username characters']
   },
   description: {
     type: Schema.ObjectId,

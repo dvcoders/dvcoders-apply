@@ -58,10 +58,9 @@ module.exports = (app, logger) => {
       })
     }
   }, (req, res, next) => {
-
     // Mongoose actions
     let body = req.body
-    logger.info(`Request body ${body}`)
+    logger.info(`Request body ${JSON.stringify(body)}`)
     User.count({
       email: body.email
     }).exec().then(count => {

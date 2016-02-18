@@ -7,9 +7,9 @@ let User = mongoose.model('User')
 let Survey = mongoose.model('Survey')
 
 let ajaxResponse = {
-  'success': '',
-  'emailValid': '',
-  'githubValid': '',
+  'success': true,
+  'emailValid': true,
+  'githubValid': true,
   'errorMessage': ''
 }
 
@@ -35,14 +35,15 @@ module.exports = (app, logger) => {
   }, (req, res, next) => {
     // Mongoose actions
     let body = req.body
-    logger.info('Request body:', req.body)
+    logger.info(`Request body ${JSON.stringify(body)}`)
 
     // Create and save User with Survey
     new User({
       firstName: body.firstName,
       lastName: body.lastName, // '', // Forcing a required error
       email: body.email,
-      mailchimp: !!body.mailchimp // Convert to boolean if not already
+      mailchimp: !!body.mailchimp, // Convert to boolean if not already
+      github: body.githubUsername
     }).save().then(user => {
       return new Survey({
         'experience': body.experience,
@@ -59,9 +60,7 @@ module.exports = (app, logger) => {
     }).then(user => {
       // Successful save and invitation
       logger.info('Successfully invited', user)
-      ajaxResponse.success = true
-      ajaxResponse.emailValid = true
-      res.json(ajaxResponse)
+      next()
     }, err => {
       console.log(err)
       if (err.code === 11000) {
@@ -73,7 +72,7 @@ module.exports = (app, logger) => {
       } else {
         logger.error(err.message)
         ajaxResponse.success = false
-        ajaxResponse.errorMessage = Object.keys(err.errors).map(key => err.errors[key].message).join(' ')
+        ajaxResponse.errorMessage = Object.keys(err.errors).map(key => err.errors[key].message).join(', ')
         return res.status(500).json(ajaxResponse)
       }
     })

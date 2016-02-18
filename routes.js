@@ -8,9 +8,9 @@ let User = mongoose.model('User')
 let Survey = mongoose.model('Survey')
 
 let ajaxResponse = {
-  'success': '',
-  'emailValid': '',
-  'githubValid': '',
+  'success': true,
+  'emailValid': true,
+  'githubValid': true,
   'errorMessage': ''
 }
 
@@ -37,23 +37,21 @@ module.exports = (app, logger) => {
           res.status(500).end()
         } else if (statusCode === 404) {
           // Username could not be found
-          res.status(400)
           ajaxResponse.success = false
           ajaxResponse.githubValid = false
           ajaxResponse.errorMessage = 'Github username could not be found'
-          return res.json(ajaxResponse)
+          logger.info(ajaxResponse.errorMessage)
+          return res.status(400).json(ajaxResponse)
         } else if (statusCode === 200) {
-          logger.info('Successfully invited user')
+          logger.info('Successfully invited user to GitHub')
           next()
         } else {
-          // if api sends back anything other than 200 or 404, something
-          // must be wrong with our server or github's api
+          // if api sends back anything other than 200 or 404, something must be wrong with our server or Github's API
           logger.error(`Github API responded with ${statusCode}`)
-          res.status(500)
           ajaxResponse.success = false
           ajaxResponse.githubValid = false
           ajaxResponse.errorMessage = 'Internal server error'
-          return res.json(ajaxResponse)
+          return res.status(500).json(ajaxResponse)
         }
       })
     }
@@ -61,20 +59,16 @@ module.exports = (app, logger) => {
     // Mongoose actions
     let body = req.body
     logger.info(`Request body ${JSON.stringify(body)}`)
-    User.count({
-      email: body.email
-    }).exec().then(count => {
-      if (count > 0) {
-        logger.error('Email already in system')
-        ajaxResponse.success = false
-        ajaxResponse.emailValid = false
-        ajaxResponse.errorMessage = 'Email already registered'
-        res.status(400)
-        return res.json(ajaxResponse)
-      }
 
-      // Create and save Survey first b/c User depends on it
-      new Survey({
+    // Create and save User with Survey
+    new User({
+      firstName: body.firstName,
+      lastName: body.lastName, // '', // Forcing a required error
+      email: body.email,
+      mailchimp: !!body.mailchimp, // Convert to boolean if not already
+      github: body.githubUsername
+    }).save().then(user => {
+      return new Survey({
         'experience': body.experience,
         'interests': body.interests,
         'more-interests': body['more-interests'],
@@ -83,24 +77,34 @@ module.exports = (app, logger) => {
         'events': body.events,
         'more-events': body['more-events']
       }).save().then(survey => {
-        new User({
-          firstName: body.firstName,
-          lastName: body.lastName,
-          email: body.email,
-          mailchimp: !!body.mailchimp,
-          description: survey
-        }).save().then(user => {
-          // Successful save and invitation
-          addToSlack(body.email, (err, statusCode, invited) => {
-            console.log(user)
-            ajaxResponse.success = true
-            ajaxResponse.emailValid = true
-            ajaxResponse.slackSuccess = !err && statusCode === 200
-            ajaxResponse.slackInvited = invited
-            return res.json(ajaxResponse)
-          })
-        })
+        user.description = survey
+        return user.save()
       })
+    }).then(user => {
+      // Successful save and invitation
+      logger.info('Successfully saved user')
+      next()
+    }, err => {
+      console.log(err)
+      if (err.code === 11000) {
+        logger.error('Duplicated email')
+        ajaxResponse.success = false
+        ajaxResponse.emailValid = false
+        ajaxResponse.errorMessage = 'Email already registered'
+        return res.status(400).json(ajaxResponse)
+      } else {
+        logger.error(err.message)
+        ajaxResponse.success = false
+        ajaxResponse.errorMessage = Object.keys(err.errors).map(key => err.errors[key].message).join(', ')
+        return res.status(500).json(ajaxResponse)
+      }
+    })
+  }, (req, res, next) => {
+    // Slack actions
+    addToSlack(req.body.email, (err, statusCode, invited) => {
+      ajaxResponse.slackSuccess = !err && statusCode === 200
+      ajaxResponse.slackInvited = invited
+      return res.status(statusCode).json(ajaxResponse)
     })
   })
 
@@ -109,21 +113,19 @@ module.exports = (app, logger) => {
     // (error, statusCode) is passed to callback function
     let options = {
       hostname: 'api.github.com',
-      // Use environment variable to store api key as recommended by github
-      // Run `export githubApiKey=key` before running nodemon
-      path: `/teams/1679886/memberships/${githubUsername}?access_token=${config.github.apiKey}`,
+      // Make sure that GITHUB_API_KEY is set before running server
+      path: `/teams/1679886/meqmberships/${githubUsername}?access_token=${config.github.apiKey}`,
       method: 'PUT',
       headers: {
         'User-Agent': config.github.userAgent
       }
     }
 
-    let req = https.request(options, (res) => {
-      cb(null, res.statusCode)
+    let ghReq = https.request(options, (ghRes) => {
+      cb(null, ghRes.statusCode)
     })
-    req.end()
-    req.on('error', (e) => {
-      // request ended with an error (github or us, doens't matter) internal server error
+    ghReq.end()
+    ghReq.on('error', (e) => {
       logger.error(`Github request error: ${e}`)
       cb(e, 500)
     })

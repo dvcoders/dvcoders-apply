@@ -40,9 +40,10 @@ module.exports = (app, logger) => {
           ajaxResponse.success = false
           ajaxResponse.githubValid = false
           ajaxResponse.errorMessage = 'Github username could not be found'
+          logger.info(ajaxResponse.errorMessage)
           return res.status(400).json(ajaxResponse)
         } else if (statusCode === 200) {
-          logger.info('Successfully invited user')
+          logger.info('Successfully invited user to GitHub')
           next()
         } else {
           // if api sends back anything other than 200 or 404, something must be wrong with our server or Github's API
@@ -81,7 +82,7 @@ module.exports = (app, logger) => {
       })
     }).then(user => {
       // Successful save and invitation
-      logger.info('Successfully invited', user)
+      logger.info('Successfully saved user')
       next()
     }, err => {
       console.log(err)
@@ -107,7 +108,7 @@ module.exports = (app, logger) => {
     })
   })
 
-  let addToTeam = (res, next, githubUsername, cb) => {
+  let addToTeam = (githubUsername, cb) => {
     // sends and invite to the passed username to join the "developer" team
     // (error, statusCode) is passed to callback function
     let options = {
@@ -121,12 +122,12 @@ module.exports = (app, logger) => {
     }
 
     let ghReq = https.request(options, (ghRes) => {
-      cb(res, next, null, ghRes.statusCode)
+      cb(null, ghRes.statusCode)
     })
     ghReq.end()
     ghReq.on('error', (e) => {
       logger.error(`Github request error: ${e}`)
-      cb(res, next, e, 500)
+      cb(e, 500)
     })
   }
 

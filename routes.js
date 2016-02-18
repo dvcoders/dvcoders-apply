@@ -114,7 +114,7 @@ module.exports = (app, logger) => {
     let options = {
       hostname: 'api.github.com',
       // Make sure that GITHUB_API_KEY is set before running server
-      path: `/teams/1679886/meqmberships/${githubUsername}?access_token=${config.github.apiKey}`,
+      path: `/teams/1679886/memberships/${githubUsername}?access_token=${config.github.apiKey}`,
       method: 'PUT',
       headers: {
         'User-Agent': config.github.userAgent

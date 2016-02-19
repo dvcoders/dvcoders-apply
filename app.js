@@ -15,8 +15,8 @@ app.set('port', process.env.PORT || config.server.port || 3000)
 app.locals.app = config.client
 
 app.use(express.static('public'))
-app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ 'extended': true }))
+app.use(bodyParser.json())
 
 // Create the logging utility
 let logger = require('./logger.js')()
@@ -37,15 +37,22 @@ nunjucks.configure('views', {
   'express': app
 })
 
+if (config.github.apiKey && config.github.userAgent && config.slack.token) {
+  logger.info('Github API Key, User Agent values set, Slack token set')
+} else {
+  logger.error(`One of the following is not set: Github API Key, User Agent variables, Slack token.\nPlease set the following enviornment variables:\nexport GITHUB_API_KEY=key & export GITHUB_USER_AGENT=userAgent & export SLACK_TOKEN=token`)
+
+  // Exit the process if no API Key or User Agent is available
+  process.exit()
+}
+
 // Connect to MongoDB and start web server on success
 db(err => {
   if (err) {
     return console.error('MongoDB connection error:', err)
   }
-
-  console.log('Connected to MongoDB!')
-
-  // Create routing
+  logger.info('Connected to MongoDB!')
+  // Create routing after database is connected
   require('./routes.js')(app, logger)
 
   // Start the server

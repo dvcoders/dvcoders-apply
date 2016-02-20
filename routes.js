@@ -50,7 +50,7 @@ module.exports = (app, logger) => {
           logger.error(`Github API responded with ${statusCode}`)
           ajaxResponse.success = false
           ajaxResponse.githubValid = false
-          ajaxResponse.errorMessage = 'Internal server error'
+          ajaxResponse.errorMessage = 'Github username error'
           return res.status(500).json(ajaxResponse)
         }
       })

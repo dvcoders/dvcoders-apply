@@ -56,18 +56,22 @@ module.exports = (app, logger) => {
       })
     }
   }, (req, res, next) => {
-    // Mongoose actions
+    // Databse actions w/ Mongoose
     let body = req.body
     logger.info(`Request body ${JSON.stringify(body)}`)
 
-    // Create and save User with Survey
-    new User({
+    let userObj = {
       firstName: body.firstName,
-      lastName: body.lastName, // '', // Forcing a required error
+      lastName: body.lastName,
       email: body.email,
       mailchimp: !!body.mailchimp, // Convert to boolean if not already
       github: body.githubUsername
-    }).save().then(user => {
+    }
+
+    // Search for the user email.
+    // Email exists? Update
+    // Email original? Create new using upsert
+    User.findOneAndUpdate({email: userObj.email}, userObj, {upsert: true, new: true}).exec().then((user) => {
       return new Survey({
         'experience': body.experience,
         'interests': body.interests,
@@ -76,15 +80,15 @@ module.exports = (app, logger) => {
         'more-projects': body['more-projects'],
         'events': body.events,
         'more-events': body['more-events']
-      }).save().then(survey => {
+      }).save().then((survey) => {
         user.description = survey
         return user.save()
       })
-    }).then(user => {
+    }).then((user) => {
       // Successful save and invitation
       logger.info('Successfully saved user')
-      next()
-    }, err => {
+      next() // Move to addToSlack
+    }, (err) => {
       console.log(err)
       if (err.code === 11000) {
         logger.error('Duplicated email')
@@ -95,7 +99,7 @@ module.exports = (app, logger) => {
       } else {
         logger.error(err.message)
         ajaxResponse.success = false
-        ajaxResponse.errorMessage = Object.keys(err.errors).map(key => err.errors[key].message).join(', ')
+        ajaxResponse.errorMessage = Object.keys(err.errors).map((key) => err.errors[key].message).join(', ')
         return res.status(500).json(ajaxResponse)
       }
     })
@@ -160,7 +164,7 @@ module.exports = (app, logger) => {
       })
       res.on('end', () => {
         let resBody = JSON.parse(body)
-        console.log(resBody)
+        logger.info('Slack response:', resBody)
         if (res.status === 200 && !resBody.ok && (resBody.error === 'already_invited' || resBody.error === 'already_in_team')) {
           cb(null, 200, true)
         } else {

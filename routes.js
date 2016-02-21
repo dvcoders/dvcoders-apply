@@ -72,21 +72,27 @@ module.exports = (app, logger) => {
     // Email exists? Update
     // Email original? Create new using upsert
     User.findOneAndUpdate({email: userObj.email}, userObj, {upsert: true, new: true}).exec().then((user) => {
-      return new Survey({
-        'experience': body.experience,
-        'interests': body.interests,
-        'more-interests': body['more-interests'],
-        'projects': body.projects,
-        'more-projects': body['more-projects'],
-        'events': body.events,
-        'more-events': body['more-events']
-      }).save().then((survey) => {
-        user.description = survey
-        return user.save()
-      })
+      if (!user.submittedSurvey) {
+        return new Survey({
+          'experience': body.experience,
+          'interests': body.interests,
+          'more-interests': body['more-interests'],
+          'projects': body.projects,
+          'more-projects': body['more-projects'],
+          'events': body.events,
+          'more-events': body['more-events']
+        }).save().then((survey) => {
+          user.description = survey
+          user.submittedSurvey = true
+          return user.save()
+        })
+      } else {
+        logger.info('Updated exisitng user')
+        next()
+      }
     }).then((user) => {
       // Successful save and invitation
-      logger.info('Successfully saved user')
+      logger.info('Successfully saved new user')
       next() // Move to addToSlack
     }, (err) => {
       logger.error(err)

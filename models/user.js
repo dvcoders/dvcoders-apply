@@ -31,7 +31,8 @@ let userSchema = new Schema({
   description: {
     type: Schema.ObjectId,
     ref: 'Survey'
-  }
+  },
+  submittedSurvey: Boolean
 })
 
 module.exports = mongoose.model('User', userSchema)

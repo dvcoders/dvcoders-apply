@@ -89,19 +89,10 @@ module.exports = (app, logger) => {
       logger.info('Successfully saved user')
       next() // Move to addToSlack
     }, (err) => {
-      console.log(err)
-      if (err.code === 11000) {
-        logger.error('Duplicated email')
-        ajaxResponse.success = false
-        ajaxResponse.emailValid = false
-        ajaxResponse.errorMessage = 'Email already registered'
-        return res.status(400).json(ajaxResponse)
-      } else {
-        logger.error(err.message)
-        ajaxResponse.success = false
-        ajaxResponse.errorMessage = Object.keys(err.errors).map((key) => err.errors[key].message).join(', ')
-        return res.status(500).json(ajaxResponse)
-      }
+      logger.error(err)
+      ajaxResponse.success = false
+      ajaxResponse.errorMessage = Object.keys(err.errors).map((key) => err.errors[key].message).join(', ')
+      return res.status(500).json(ajaxResponse)
     })
   }, (req, res, next) => {
     // Slack actions

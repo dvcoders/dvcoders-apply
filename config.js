@@ -7,7 +7,8 @@ exports.server = {
 
 exports.mongodb = {
   'address': process.env.MONGODB_URL || 'localhost',
-  'database': process.env.MONGODB_DATABASE || 'dvcoders'
+  'database': process.env.MONGODB_DATABASE || 'dvcoders',
+  'port': process.env.MONGODB_PORT || '27017'
 }
 
 // Config for the rendering client

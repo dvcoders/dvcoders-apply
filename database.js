@@ -2,10 +2,10 @@
 
 let mongoose = require('mongoose')
 let config = require('./config').mongodb
-mongoose.connect(`mongodb://${config.address}/${config.database}`)
+mongoose.connect(`mongodb://${config.address}:${config.port}/${config.database}`)
 let db = mongoose.connection
 
-module.exports = cb => {
+module.exports = (cb) => {
   db.on('error', cb)
   db.once('open', () => {
     // Register the models in Mongoose

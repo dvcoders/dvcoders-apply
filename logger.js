@@ -8,7 +8,8 @@ module.exports = () => (new winston.Logger({
     'level': 'debug',
     'handleExceptions': false,
     'json': false,
-    'colorize': true
+    'colorize': true,
+    'timestamp': true,
   })],
   'exitOnError': false
 }))

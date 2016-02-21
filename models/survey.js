@@ -10,7 +10,11 @@ let surveySchema = new Schema({
   'projects': [String],
   'more-projects': [String],
   'events': [String],
-  'more-events': [String]
+  'more-events': [String],
+  'user': {
+    type: Schema.ObjectId,
+    ref: 'User'
+  }
 })
 
 module.exports = mongoose.model('Survey', surveySchema)

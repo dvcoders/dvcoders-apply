@@ -29,5 +29,8 @@
     "winston": "^2.1.1",
     "mongoose": "^4.4.3",
     "standard": "^3.0.0"
+  },
+  "devDependencies": {
+    "supertest": "^1.2.0"
   }
 }

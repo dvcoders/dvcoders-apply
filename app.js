@@ -3,7 +3,7 @@
 let express = require('express')
 let bodyParser = require('body-parser')
 let nunjucks = require('nunjucks')
-let app = express()
+let app = exports.app = express()
 let config = require('./config.js')
 let utils = require('./utils.js')
 let db = require('./database')

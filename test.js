@@ -14,9 +14,9 @@ describe('loading express', function() {
 			.send({
 				'firstName':'John',
 				'lastName':'Smith',
-				'email':'fjaiower@gmail.com',
+				'email':'fjaiower@boier.com',
 				'mailchimp':'on',
-				'githubUsername':'bwreretest123',
+				'githubUsername':'jwsong',
 				'more-interests':'',
 				'more-projects':'',
 				'more-events':''

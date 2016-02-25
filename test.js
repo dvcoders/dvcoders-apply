@@ -16,7 +16,7 @@ describe('loading express', function() {
 				'lastName':'Smith',
 				'email':'fjaiower@boier.com',
 				'mailchimp':'on',
-				'githubUsername':'jwsong',
+				'githubUsername':'', // TODO: test addToTeam()
 				'more-interests':'',
 				'more-projects':'',
 				'more-events':''

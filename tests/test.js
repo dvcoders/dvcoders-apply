@@ -1,3 +1,4 @@
+/*globals describe, it*/
 var app = require('./app.js').app
 var request = require('supertest')(app)
 

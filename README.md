@@ -1,15 +1,15 @@
-# dvcoders-backend
+## dvcoders-backend
 Our backend server (Node.js + MongoDB)
 
-## REQUIREMENTS
+### Requirements
  * [Node.js & NPM](https://nodejs.org/en/)
  * [MongoDB](https://www.mongodb.org/)
 
-###For testing:
+### Testing
  * [Mocha](https://mochajs.org/)
  * [Supertest](https://github.com/visionmedia/supertest)
 
-## INSTALLATION
+### Installation
 You need to set these following environment variables for Github API key, User Agent values, and Slack token:
  * GITHUB_API_KEY - Github API key.
  * GITHUB_USER_AGENT - your github username.
@@ -52,7 +52,7 @@ EOF
 pm2 start server.json
 ```
 
-## TESTING
+### Testing
 Set up all the required env variables, install development dependencies, and run from your terminal:
 ```bash
 mocah test app.js

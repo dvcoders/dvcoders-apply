@@ -5,6 +5,10 @@ Our backend server (Node.js + MongoDB)
  * [Node.js & NPM](https://nodejs.org/en/)
  * [MongoDB](https://www.mongodb.org/)
 
+###For testing:
+ * [Mocha](https://mochajs.org/)
+ * [Supertest](https://github.com/visionmedia/supertest)
+
 ## INSTALLATION
 You need to set these following environment variables for Github API key, User Agent values, and Slack token:
  * GITHUB_API_KEY - Github API key.
@@ -46,4 +50,10 @@ cat <<EOF > server.json
 }
 EOF
 pm2 start server.json
+```
+
+## TESTING
+Set up all the required env variables, install development dependencies, and run from your terminal:
+```bash
+mocah test app.js
 ```

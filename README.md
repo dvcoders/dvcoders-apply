@@ -8,7 +8,7 @@ Our backend server (Node.js + MongoDB)
  * [Node.js & NPM](https://nodejs.org/en/)
  * [MongoDB](https://www.mongodb.org/)
 
-### Testing
+#### For testing 
  * [Mocha](https://mochajs.org/)
  * [Supertest](https://github.com/visionmedia/supertest)
 

@@ -4,7 +4,7 @@
   "description": "The dvcoders backend",
   "main": "app.js",
   "scripts": {
-    "test": "standard",
+    "test": "standard && mocha",
     "start": "node app.js"
   },
   "repository": {

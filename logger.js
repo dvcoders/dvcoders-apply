@@ -9,8 +9,7 @@ module.exports = () => (new winston.Logger({
     'handleExceptions': false,
     'json': false,
     'colorize': true,
-    'timestamp': true,
+    'timestamp': true
   })],
   'exitOnError': false
 }))
-

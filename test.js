@@ -1,5 +1,7 @@
-var app = require('./app.js').app
-var request = require('supertest')(app)
+/* eslint-env mocha */
+
+const app = require('./app.js').app
+const request = require('supertest')(app)
 
 describe('loading express', function () {
   it('GET /', function testSlash (done) {

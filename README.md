@@ -55,5 +55,5 @@ pm2 start server.json
 ## TESTING
 Set up all the required env variables, install development dependencies, and run from your terminal:
 ```bash
-mocah test app.js
+npm test
 ```

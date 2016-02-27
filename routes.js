@@ -31,7 +31,7 @@ module.exports = (app, logger) => {
     if (githubUsername === '') {
       next()
     } else {
-      addToTeam(githubUsername, (err, statusCode) => {
+      addToGithub(githubUsername, (err, statusCode) => {
         if (err) {
           logger.error(err)
           res.status(500).end()
@@ -109,13 +109,14 @@ module.exports = (app, logger) => {
     })
   })
 
-  let addToTeam = (githubUsername, cb) => {
+  let addToGithub = (githubUsername, cb) => {
     // sends and invite to the passed username to join the "developer" team
     // (error, statusCode) is passed to callback function
     let options = {
       hostname: 'api.github.com',
       // Make sure that GITHUB_API_KEY is set before running server
-      path: `/teams/1679886/memberships/${githubUsername}?access_token=${config.github.apiKey}`,
+      // 1679886
+      path: `/teams/${config.development ? config.github.dev.teamId : config.github.teamId}/memberships/${githubUsername}?access_token=${config.github.apiKey}`,
       method: 'PUT',
       headers: {
         'User-Agent': config.github.userAgent
@@ -139,12 +140,12 @@ module.exports = (app, logger) => {
     // also not this api endpoint is "undocumented" and subject to change
     let data = querystring.stringify({
       email: email,
-      token: config.slack.token,
+      token: (config.development ? config.slack.dev.token : config.slack.token),
       set_active: true
     })
 
     let options = {
-      hostname: 'dvcoders.slack.com',
+      hostname: `${config.development ? config.slack.dev.team : config.slack.team}.slack.com`,
       path: '/api/users.admin.invite',
       method: 'POST',
       headers: {

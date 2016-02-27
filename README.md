@@ -14,6 +14,7 @@ You need to set these following environment variables for Github API key, User A
  * GITHUB_API_KEY - Github API key.
  * GITHUB_USER_AGENT - your github username.
  * SLACK_TOKEN - Slack token.
+ * SLACK_WEBHOOK_URI - Slack Webhook Uri.
 
 Then run from your terminal:
 ```bash
@@ -44,8 +45,9 @@ cat <<EOF > server.json
     "env": {
       "GITHUB_API_KEY": "$GITHUB_API_KEY",
       "GITHUB_USER_AGENT": "$GITHUB_USER_AGENT",
-      "SLACK_TOKEN": "$SLACK_TOKEN"
-      }
+      "SLACK_TOKEN": "$SLACK_TOKEN",
+      "SLACK_WEBHOOK_URI": "$SLACK_WEBHOOK_URI"
+    }
   }]
 }
 EOF

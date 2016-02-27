@@ -1,4 +1,4 @@
-## dvcoders-backend 
+## dvcoders-backend
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 
@@ -8,7 +8,7 @@ Our backend server (Node.js + MongoDB)
  * [Node.js & NPM](https://nodejs.org/en/)
  * [MongoDB](https://www.mongodb.org/)
 
-#### For testing 
+#### For testing
  * [Mocha](https://mochajs.org/)
  * [Supertest](https://github.com/visionmedia/supertest)
 
@@ -61,6 +61,7 @@ pm2 start server.json
 
 ### Testing
 Set up all the required env variables, install development dependencies, and run from your terminal:
+
 ```bash
-mocah test app.js
+mocha test app.js
 ```

@@ -63,5 +63,5 @@ pm2 start server.json
 Set up all the required env variables, install development dependencies, and run from your terminal:
 
 ```bash
-mocha test app.js
+npm test
 ```

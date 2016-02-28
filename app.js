@@ -36,13 +36,24 @@ nunjucks.configure('views', {
   'express': app
 })
 
-if (config.github.apiKey && config.github.userAgent && config.slack.token) {
-  logger.info('Github API Key, User Agent values set, Slack token set')
+if (process.env.NODE_ENV === 'production') {
+  if (config.github.apiKey && config.github.userAgent && config.slack.token) {
+    logger.info('PRODUCTION: Github API Key, User Agent values set, Slack token set')
+  } else {
+    logger.error(`One of the following is not set: PRODUCTION Github API Key, User Agent variables, PRODUCTION Slack token.
+        Please set the following enviornment variables:
+        export GITHUB_API_KEY=key & export GITHUB_USER_AGENT=userAgent & export SLACK_TOKEN=token`)
+    process.exit()
+  }
 } else {
-  logger.error(`One of the following is not set: Github API Key, User Agent variables, Slack token.\nPlease set the following enviornment variables:\nexport GITHUB_API_KEY=key & export GITHUB_USER_AGENT=userAgent & export SLACK_TOKEN=token`)
-
-  // Exit the process if no API Key or User Agent is available
-  process.exit()
+  if (config.github.dev.apiKey && config.github.userAgent && config.slack.dev.token) {
+    logger.info('DEVELOPMENT: Github API Key, User Agent values set, Slack token set')
+  } else {
+    logger.error(`One of the following is not set: DEVELOPMENT Github API Key, User Agent variables, DEVELOPMENT Slack token.
+        Please set the following enviornment variables:
+        export GITHUB_API_KEY=key & export GITHUB_USER_AGENT=userAgent & export SLACK_TOKEN=token`)
+    process.exit()
+  }
 }
 
 // Connect to MongoDB and start web server on success

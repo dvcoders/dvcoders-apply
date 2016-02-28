@@ -5,7 +5,6 @@ let bodyParser = require('body-parser')
 let nunjucks = require('nunjucks')
 let app = exports.app = express()
 let config = require('./config.js')
-let utils = require('./utils.js')
 let db = require('./database')
 
 // Set the server's port

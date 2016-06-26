@@ -16,9 +16,9 @@ module.exports = () => (new winston.Logger({
       'timestamp': true
     }),
     new winston.transports.Slack({
-      channel: '#general',
+      channel: '#server-logs',
       webhookUri: config.slack.webhookUri,
-      username: 'ErrorBot',
+      username: 'dvserver',
       level: 'error'
     })
   ],

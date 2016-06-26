@@ -19,7 +19,8 @@ module.exports = () => (new winston.Logger({
       channel: '#server-logs',
       webhookUri: config.slack.webhookUri,
       username: 'dvserver',
-      level: 'error'
+      level: 'error',
+      iconUrl: 'https://avatars1.githubusercontent.com/u/10080572?v=3&s=200'
     })
   ],
   'exitOnError': false

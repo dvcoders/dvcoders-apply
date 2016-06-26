@@ -19,6 +19,7 @@ let Slack = exports.Slack = function (options) {
   this.level = options.level || 'error'
   this.silent = options.silent || false
   this.handleExceptions = options.handleExceptions || false
+  this.iconUrl = options.iconUrl
   this.slack = new NodeSlack(this.webhookUri)
 }
 
@@ -48,7 +49,8 @@ Slack.prototype.log = function (level, msg, meta, callback) {
   this.slack.send({
     text: '[' + level + '] ' + msg,
     channel: this.channel,
-    username: this.username
+    username: this.username,
+    icon_url: this.iconUrl
   })
 
   callback(null, true)

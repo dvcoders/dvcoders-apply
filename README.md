@@ -10,17 +10,33 @@ Our backend server (Node.js + MongoDB)
 * [Supertest](https://github.com/visionmedia/supertest)
 
 ## INSTALLATION
-You need to set these following environment variables for Github API key, User Agent values, and Slack token:
- * GITHUB_API_KEY - Github API key.
- * GITHUB_USER_AGENT - your github username.
- * SLACK_TOKEN - Slack token.
-
-Then run from your terminal:
+Run from your terminal:
 
 ```bash
 git clone git@github.com:dvcoders/dvcoders-backend.git
 cd dvcoders-backend
 npm install
+```
+
+Then you need to create a [`.env`](https://github.com/motdotla/dotenv) file for the environment variables for your Github API key, Github User-Agent header, and Slack token:
+
+* `GITHUB_API_KEY` - [Github API key](https://github.com/settings/tokens)
+* `GITHUB_USER_AGENT` - Your Github username
+* `SLACK_TOKEN` - [Slack token](https://api.slack.com/docs/oauth-test-tokens)
+
+Example:
+
+```text
+GITHUB_API_KEY=9f869b245f49641b12137cb202ccb82c3f870eb9
+GITHUB_USER_AGENT=dvcoders
+SLACK_TOKEN=xoxp-1495209272-1796258573-9288732744-1b9d2f09
+```
+
+Make sure you have MongoDB running. On OSX, you can run:
+
+```bash
+brew install mongodb
+brew services start mongodb
 ```
 
 *For development work:*
@@ -43,12 +59,7 @@ cat <<EOF > server.json
   "apps": [{
     "name": "dvcoders-backend",
     "script": "app.js",
-    "watch": true,
-    "env": {
-      "GITHUB_API_KEY": "$GITHUB_API_KEY",
-      "GITHUB_USER_AGENT": "$GITHUB_USER_AGENT",
-      "SLACK_TOKEN": "$SLACK_TOKEN"
-      }
+    "watch": true
   }]
 }
 EOF
@@ -59,5 +70,5 @@ pm2 start server.json
 Set up all the required env variables, install development dependencies, and run from your terminal:
 
 ```bash
-mocah test app.js
+mocha test app.js
 ```

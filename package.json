@@ -18,17 +18,19 @@
   },
   "homepage": "https://github.com/dvcoders/dvcoders-backend#readme",
   "dependencies": {
-    "body-parser": "^1.14.2",
-    "express": "^4.13.4",
-    "lodash": "^4.2.0",
-    "mongoose": "^4.4.3",
-    "morgan": "^1.6.1",
-    "nodemon": "^1.8.1",
-    "nunjucks": "^2.3.0",
+    "bluebird": "^3.4.6",
+    "body-parser": "^1.15.2",
+    "dotenv": "^2.0.0",
+    "express": "^4.14.0",
+    "lodash": "^4.15.0",
+    "mongoose": "^4.6.0",
+    "morgan": "^1.7.0",
+    "nodemon": "^1.10.2",
+    "nunjucks": "^2.5.0",
     "sass": "^0.5.0",
-    "standard": "^3.0.0",
-    "webpack": "^1.12.12",
-    "winston": "^2.1.1"
+    "standard": "^3.13.2",
+    "webpack": "^1.13.2",
+    "winston": "^2.2.0"
   },
   "devDependencies": {
     "supertest": "^1.2.0"

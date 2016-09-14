@@ -20,12 +20,13 @@ input:invalid {
 }
 
 #join {
-  background-color: #b25232;
+  background-color: #d35400;
+  color: white;
 }
 
 #join-button {
-  background-color: #b25232;
-  border-color: #b25232;
+  background-color: #d35400;
+  border-color: #d35400;
 }
 
 .overlay-container {

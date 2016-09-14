@@ -25,14 +25,14 @@
     "lodash": "^4.15.0",
     "mongoose": "^4.6.0",
     "morgan": "^1.7.0",
-    "nodemon": "^1.10.2",
     "nunjucks": "^2.5.0",
     "sass": "^0.5.0",
-    "standard": "^3.13.2",
     "webpack": "^1.13.2",
     "winston": "^2.2.0"
   },
   "devDependencies": {
+    "nodemon": "^1.10.2",
+    "standard": "^3.13.2",
     "supertest": "^1.2.0"
   }
 }

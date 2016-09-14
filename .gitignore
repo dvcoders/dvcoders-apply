@@ -1,3 +1,6 @@
 node_modules
 *.log
 db
+.idea
+.env
+server.json

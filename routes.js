@@ -60,7 +60,7 @@ module.exports = (app, logger) => {
       })
     }
   }, (req, res, next) => {
-    // Databse actions w/ Mongoose
+    // Database actions w/ Mongoose
     let response = JSON.parse(ajaxResponse) // Get a copy
     let body = req.body
 
@@ -91,7 +91,7 @@ module.exports = (app, logger) => {
           return user.save()
         })
       } else {
-        logger.info('Updated exisitng user')
+        logger.info('Updated existing user')
       }
     }).then((user) => {
       // Successful save and invitation

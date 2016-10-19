@@ -23,19 +23,19 @@
         <div class="row form-row">
           <div class="six columns offset-by-three">
             <label for="firstName">*First Name</label>
-            <input class="u-full-width" type="text" placeholder="Daniel" name="firstName" id="firstName" pattern="[a-zA-Z\-\s]+" data-required>
+            <input class="u-full-width" type="text" placeholder="Daniel" name="firstName" id="firstName" pattern="^[a-zA-Z\u00C0-\u017F' -]+$" data-required>
           </div>
         </div>
         <div class="row form-row">
           <div class="six columns offset-by-three">
             <label for="lastName">*Last Name</label>
-            <input class="u-full-width" type="text" placeholder="Awai" name="lastName" id ="lastName" pattern="[a-zA-Z\-\s]+" data-required>
+            <input class="u-full-width" type="text" placeholder="Awai" name="lastName" id ="lastName" pattern="^[a-zA-Z\u00C0-\u017F' -]+$" data-required>
           </div>
         </div>
         <div class="row form-row">
           <div class="six columns offset-by-three">
             <label for="email">*Email<span></span></label>
-            <input class="u-full-width" type="email" placeholder="daniel@awai.com" name="email" id ="email" pattern="^([\w\.\-_\+]+)?\w+@[\w-_]+(\.\w+){1,}$" data-required>
+            <input class="u-full-width" type="email" placeholder="daniel@awai.com" name="email" id ="email" pattern="^[\w.+-]*\w+@[\w-]+(\.[\w-]+)+$" data-required>
             <label>
               <input type="checkbox" name="mailchimp" id="mailchimp" checked><small> Subscribe to dvcoders mailling list: meeting updates & events</small>
             </label>
@@ -44,7 +44,7 @@
         <div class="row form-row">
           <div class="six columns offset-by-three">
             <label for="githubUsername">Github Username<span></span></label>
-            <input class="u-full-width" type="text" placeholder="l33t h5x0r" id="githubUsername" name="githubUsername" pattern="[a-zA-Z0-9-]*">
+            <input class="u-full-width" type="text" placeholder="l33t h5x0r" id="githubUsername" name="githubUsername" pattern="^[a-zA-Z0-9-]*$">
           </div>
         </div>
         <hr>

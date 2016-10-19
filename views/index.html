@@ -1,182 +1,182 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+  <span class="overlay-container">
+    <div class="overlay"></div>
+    <div class="message-container">
+      <h2 id="message-title">Thank you</h2>
+      <p id="message-description">We look forward to seeing you at our next meeting!</p>
+    </div>
+  </span>
 
-<span class="overlay-container">
-  <div class="overlay"></div>
-  <div class="message-container">
-    <h2 id="message-title">Thank you</h2>
-    <p id="message-description">We look forward to seeing you at our next meeting!</p>
-  </div>
-</span>
-
-<section id="join" class="u-full-width header">
+  <section class="u-full-width header">
     <h1><b>Join</b> dvcoders</h1>
     <h5>Explore real world software development technologies.</h5>
     <h5>Learn new programming languages and tools.</h5>
     <h5>Build cool projects and websites.</h5>
   </section>
   <div class="container">
-    <div class="row">
-      <form action="/join" method="POST">
+    <form action="/join" method="POST">
 
-        <div class="row form-row">
-          <div class="six columns offset-by-three">
-            <label for="firstName">*First Name</label>
-            <input class="u-full-width" type="text" placeholder="Daniel" name="firstName" id="firstName" pattern="[a-zA-Z\-\s]+" data-required>
-          </div>
+      <div class="row form-row">
+        <div class="eight columns offset-by-two">
+          <label for="firstName">*First Name</label>
+          <input class="u-full-width" type="text" placeholder="Daniel" name="firstName" id="firstName" pattern="[a-zA-Z\u00C0-\u017F' -]+" maxlength="35" data-required>
         </div>
-        <div class="row form-row">
-          <div class="six columns offset-by-three">
-            <label for="lastName">*Last Name</label>
-            <input class="u-full-width" type="text" placeholder="Awai" name="lastName" id ="lastName" pattern="[a-zA-Z\-\s]+" data-required>
-          </div>
+      </div>
+      <div class="row form-row">
+        <div class="eight columns offset-by-two">
+          <label for="lastName">*Last Name</label>
+          <input class="u-full-width" type="text" placeholder="Awai" name="lastName" id="lastName" pattern="[a-zA-Z\u00C0-\u017F' -]+" maxlength="35" data-required>
         </div>
-        <div class="row form-row">
-          <div class="six columns offset-by-three">
-            <label for="email">*Email<span></span></label>
-            <input class="u-full-width" type="email" placeholder="daniel@awai.com" name="email" id ="email" pattern="^([\w\.\-_\+]+)?\w+@[\w-_]+(\.\w+){1,}$" data-required>
-            <label>
-              <input type="checkbox" name="mailchimp" id="mailchimp" checked><small> Subscribe to dvcoders mailling list: meeting updates & events</small>
-            </label>
-          </div>
+      </div>
+      <div class="row form-row">
+        <div class="eight columns offset-by-two">
+          <label for="email">*Email<span class="error"></span></label>
+          <input class="u-full-width" type="email" placeholder="daniel@awai.com" name="email" id="email" pattern="[\w.+-]*\w+@[\w-]+(\.[\w-]+)+" data-required>
+          <label>
+            <input type="checkbox" name="mailchimp" id="mailchimp" checked><small> Subscribe to dvcoders mailing list: meeting updates & events</small>
+          </label>
         </div>
-        <div class="row form-row">
-          <div class="six columns offset-by-three">
-            <label for="githubUsername">Github Username<span></span></label>
-            <input class="u-full-width" type="text" placeholder="l33t h5x0r" id="githubUsername" name="githubUsername" pattern="[a-zA-Z0-9-]*">
-          </div>
+      </div>
+      <div class="row form-row">
+        <div class="eight columns offset-by-two">
+          <label for="githubUsername">Github Username<span class="error"></span></label>
+          <input autocapitalize="off" class="u-full-width" type="text" placeholder="l33t-h4x0r" id="githubUsername" name="githubUsername" pattern="[a-zA-Z0-9-]*" maxlength="35">
         </div>
-        <hr>
+      </div>
+      <div class="row form-row">
+        <div class="eight columns offset-by-two error" id="other-error"></div>
+      </div>
+      <hr>
 
-        <div class="row form-row">
-          <div class="six columns offset-by-three">
-            <h3>Describe yourself</h3>
-            <p>We would love to know about where you're at and what you're interested in!
-            <br>
-            <small>- dvcoders is open to everyone, this has no effect on joining. Just some information to know you better.</small>
-            </p>
-          </div>
+      <div class="row form-row">
+        <div class="eight columns offset-by-two">
+          <h3>Describe yourself</h3>
+          <p>We would love to know about where you're at and what you're interested in!
+          <br>
+          <small>- dvcoders is open to everyone, this has no effect on joining. Just some information to know you better.</small>
+          </p>
         </div>
-        <div class="row form-row">
-          <div class="six columns offset-by-three">
-            <label>Programming Level</label>
-            <label class="u-full-width">
-              <input type="radio" name="experience" value="confident">
-              Confident Programmer - Built complete non-C++ projects
-            </label>
-            <label class="u-full-width">
-              <input type="radio" name="experience" value="aspiring">
-              Advancing Programmer - Dabbled in other languages
-            </label>
-            <label class="u-full-width">
-              <input type="radio" name="experience" value="new">
-              New Programmer - Just started with DVC C++
-            </label>
-            <label class="u-full-width">
-              <input type="radio" name="experience" value="non-programmer">
-              Non-Programmer - "for loop what?!"
-            </label>
-          </div>
+      </div>
+      <div class="row form-row">
+        <div class="eight columns offset-by-two">
+          <label>Programming Level</label>
+          <label class="u-full-width">
+            <input type="radio" name="experience" value="confident">
+            <span class="label-body">Confident Programmer - Built complete non-C++ projects</span>
+          </label>
+          <label class="u-full-width">
+            <input type="radio" name="experience" value="aspiring">
+            <span class="label-body">Advancing Programmer - Dabbled in other languages</span>
+          </label>
+          <label class="u-full-width">
+            <input type="radio" name="experience" value="new">
+            <span class="label-body">New Programmer - Just started with DVC C++</span>
+          </label>
+          <label class="u-full-width">
+            <input type="radio" name="experience" value="non-programmer">
+            <span class="label-body">Non-Programmer - "for loop what?!"</span>
+          </label>
         </div>
+      </div>
 
-        <div class="row form-row">
-          <div class="six columns offset-by-three">
-            <label>What interests you?<br><small>Research the terms you don't know!</small></label>
-            <label class="u-full-width">
-              <input type="checkbox" name="interests" value="front-end">
-              Front-End Web Development - HTML/CSS/JavaScript
-            </label>
-            <label class="u-full-width">
-              <input type="checkbox" name="interests" value="back-end">
-              Back-End Web Development - Web Apps, APIs, Node.js, Flask
-            </label>
-            <label class="u-full-width">
-              <input type="checkbox" name="interests" value="dev-ops">
-              Dev Ops - Linux servers, databases, load-balancers, etc.
-            </label>
-            <label class="u-full-width">
-              <input type="checkbox" name="interests" value="mobile">
-              Mobile Development - iOS/Android apps
-            </label>
-            <label class="u-full-width">
-              <input type="checkbox" name="interests" value="hardware">
-              Hardware - Arduino, drones, etc.
-            </label>
-            <label class="u-full-width">
-              <input type="checkbox" name="interests" value="fundamentals">
-              CS Fundamentsals - Algorithms, Data Structures, ML
-            </label>
-            <label class="u-full-width">
-              <input type="checkbox" name="interests" value="functional">
-              Functional Programming - Haskell, Scala, etc.
-            </label>
-            <label class="u-full-width">
-              More
-              <input type="text" name="more-interests" style="display:block;">
-            </label>
-          </div>
+      <div class="row form-row">
+        <div class="eight columns offset-by-two">
+          <label>What interests you?<br><small>Research the terms you don't know!</small></label>
+          <label class="u-full-width">
+            <input type="checkbox" name="interests" value="front-end">
+            <span class="label-body">Front-End Web Development - HTML/CSS/JavaScript</span>
+          </label>
+          <label class="u-full-width">
+            <input type="checkbox" name="interests" value="back-end">
+            <span class="label-body">Back-End Web Development - Web Apps, APIs, Node.js, Flask</span>
+          </label>
+          <label class="u-full-width">
+            <input type="checkbox" name="interests" value="dev-ops">
+            <span class="label-body">Dev Ops - Linux servers, databases, load-balancers, etc.</span>
+          </label>
+          <label class="u-full-width">
+            <input type="checkbox" name="interests" value="mobile">
+            <span class="label-body">Mobile Development - iOS/Android apps</span>
+          </label>
+          <label class="u-full-width">
+            <input type="checkbox" name="interests" value="hardware">
+            <span class="label-body">Hardware - Arduino, drones, etc.</span>
+          </label>
+          <label class="u-full-width">
+            <input type="checkbox" name="interests" value="fundamentals">
+            <span class="label-body">CS Fundamentals - Algorithms, Data Structures, ML</span>
+          </label>
+          <label class="u-full-width">
+            <input type="checkbox" name="interests" value="functional">
+            <span class="label-body">Functional Programming - Haskell, Scala, etc.</span>
+          </label>
+          <label class="u-full-width">
+            <span class="label-body">More</span>
+            <input class="more-input" type="text" name="more-interests">
+          </label>
         </div>
+      </div>
 
-        <div class="row form-row">
-          <div class="eight columns offset-by-three">
-            <label>What kinds of projects do you want to make?<br><small>Been dying to make a website? Hear about cool side projects? Got an idea? Now's the time to share!</small></label>
-            <label>
-              <input type="checkbox" name="projects" value="personal-site">
-              Personal Website/Blog
-            </label>
-            <label>
-              <input type="checkbox" name="projects" value="web-game">
-              Web Game
-            </label>
-            <label>
-              <input type="checkbox" name="projects" value="mobile-app">
-              Mobile Application (iOS/Android)
-            </label>
-            <label>
-              <input type="checkbox" name="projects" value="web-app">
-              Web Application & API
-            </label>
-            <label class="u-full-width">
-              More
-              <input type="text" name="more-projects" style="display:block;">
-            </label>
-          </div>
+      <div class="row form-row">
+        <div class="eight columns offset-by-two">
+          <label>What kinds of projects do you want to make?<br><small>Been dying to make a website? Hear about cool side projects? Got an idea? Now's the time to share!</small></label>
+          <label>
+            <input type="checkbox" name="projects" value="personal-site">
+            <span class="label-body">Personal Website/Blog</span>
+          </label>
+          <label>
+            <input type="checkbox" name="projects" value="web-game">
+            <span class="label-body">Web Game</span>
+          </label>
+          <label>
+            <input type="checkbox" name="projects" value="mobile-app">
+            <span class="label-body">Mobile Application (iOS/Android)</span>
+          </label>
+          <label>
+            <input type="checkbox" name="projects" value="web-app">
+            <span class="label-body">Web Application & API</span>
+          </label>
+          <label class="u-full-width">
+            <span class="label-body">More</span>
+            <input class="more-input" type="text" name="more-projects">
+          </label>
         </div>
+      </div>
 
-        <div class="row form-row">
-          <div class="eight columns offset-by-three">
-            <label>What kind of events and activities are you interseted in?</label>
-            <label>
-              <input type="checkbox" name="events" value="showcase">
-              Showcase Night - show off projects we've made
-            </label>
-            <label>
-              <input type="checkbox" name="events" value="meetup">
-              Dev Meetups - developer meetups in the Bay Area
-            </label>
-            <label>
-              <input type="checkbox" name="events" value="hackathon">
-              Hackathons - Cal Hacks, Treehacks, or one at DVC!
-            </label>
-            <label>
-              <input type="checkbox" name="events" value="infosession">
-              Info sessions - Companies talking about jobs/internships
-            </label>
-            <label class="u-full-width">
-              More
-              <input type="text" name="more-events" style="display:block;">
-            </label>
-          </div>
+      <div class="row form-row">
+        <div class="eight columns offset-by-two">
+          <label>What kind of events and activities are you interested in?</label>
+          <label>
+            <input type="checkbox" name="events" value="showcase">
+            <span class="label-body">Showcase Night - show off projects we've made</span>
+          </label>
+          <label>
+            <input type="checkbox" name="events" value="meetup">
+            <span class="label-body">Dev Meetups - developer meetups in the Bay Area</span>
+          </label>
+          <label>
+            <input type="checkbox" name="events" value="hackathon">
+            <span class="label-body">Hackathons - Cal Hacks, Treehacks, or one at DVC!</span>
+          </label>
+          <label>
+            <input type="checkbox" name="events" value="infosession">
+            <span class="label-body">Info sessions - Companies talking about jobs/internships</span>
+          </label>
+          <label class="u-full-width">
+            <span class="label-body">More</span>
+            <input class="more-input" type="text" name="more-events">
+          </label>
         </div>
+      </div>
 
-        <div class="row form-row">
-          <div class="six columns offset-by-three">
-            <input class="button-primary" id="join-button" type="submit" value="Join">
-          </div>
+      <div class="row form-row">
+        <div class="eight columns offset-by-two">
+          <input class="button-primary" id="join-button" type="submit" value="Join">
         </div>
+      </div>
 
-      </form>
-    </div>
+    </form>
   </div>
 {% endblock %}

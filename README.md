@@ -1,15 +1,17 @@
-# dvcoders-backend
+## dvcoders-backend
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+
 Our backend server (Node.js + MongoDB)
 
-## REQUIREMENTS
+### Requirements
 * [Node.js & NPM](https://nodejs.org/en/)
 * [MongoDB](https://www.mongodb.org/)
 
-### For testing:
+#### For testing
 * [Mocha](https://mochajs.org/)
 * [Supertest](https://github.com/visionmedia/supertest)
 
-## INSTALLATION
+### Installation
 Run from your terminal:
 
 ```bash
@@ -39,16 +41,18 @@ brew install mongodb
 brew services start mongodb
 ```
 
-*For development work:*
+### Running
 
-Use [`nodemon`](http://nodemon.io/) to have the server restart automatically when changes are made.
+#### For development work
+
+Use [`nodemon`](http://nodemon.io/) to restart the server automatically when changes are made.
 
 ```bash
 npm install -g nodemon
 nodemon app.js
 ```
 
-*For production deployment:*
+#### For production deployment
 
 Use [`pm2`](http://pm2.keymetrics.io/) to handle log management and server crashes.
 
@@ -66,9 +70,9 @@ EOF
 pm2 start server.json
 ```
 
-## TESTING
+### Testing
 Set up all the required env variables, install development dependencies, and run from your terminal:
 
 ```bash
-mocha test app.js
+npm test
 ```

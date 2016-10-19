@@ -6,52 +6,58 @@ function scrollToElement (element) {
 }
 
 function renderError (el, message) {
-  console.log('Appending: ' + message)
-  el.text(' - ' + message)
+  el.text(message)
+  el.css({
+    color: '#d35400',
+    display: 'inline'
+  })
 }
 
 $(function () {
   window.addEventListener('submit', function (e) {
-    var requiredMatched = true
     e.preventDefault()
-    var inputs = document.querySelectorAll('input[data-required]')
-    var githubUsername = document.querySelector('#githubUsername')
-    Array.prototype.slice.call(inputs).forEach(function (el) {
-      if (el.getAttribute('pattern') ? !(new RegExp(el.getAttribute('pattern')).test(el.value)) : el.value === '') {
-        e.stopPropagation()
+    var requiredMatched = true
+    var form = $('form')
+    var inputs = $('input[data-required]')
+    var githubUsername = $('#githubUsername').get(0)
+
+    inputs.each(function (i, el) {
+      if (!el.checkValidity() || el.value === '') {
         el.setAttribute('required', true)
         requiredMatched = false
+        scrollToElement(form)
       }
     })
 
-    if (githubUsername.value !== '' && !(new RegExp(githubUsername.getAttribute('pattern')).test(githubUsername.value))) {
-      e.stopPropagation()
+    if (githubUsername.value !== '' && !githubUsername.checkValidity()) {
       requiredMatched = false
     }
 
     if (requiredMatched) {
       $.ajax({
-        url: '/join',
-        type: 'POST',
-        data: $('form').serialize()
+        url: form.attr('action'),
+        type: form.attr('method'),
+        data: form.serialize()
       }).then(function (data) {
         $('.overlay-container').show()
         $('#join-button').hide()
         // To clear fields, so no annoying closing messages displayed by browser
-        document.querySelector('form').reset()
+        form.get(0).reset()
       }, function (res) {
         var data = JSON.parse(res.responseText)
 
         var errorElement
-        if (!data.success && !data.emailValid) {
-          errorElement = $('label[for=email] span')
-          console.log(data.errorMessage)
-          scrollToElement(errorElement, data.errorMessage)
-          renderError(errorElement, data.errorMessage)
-        } else if (!data.success && !data.githubValid) {
-          errorElement = $('label[for=githubUsername] span')
-          console.log(data.errorMessage)
+        if (!data.emailValid) {
+          errorElement = $('label[for=email] .error')
           scrollToElement(errorElement)
+          renderError(errorElement, ' - ' + data.errorMessage)
+        } else if (!data.githubValid) {
+          errorElement = $('label[for=githubUsername] .error')
+          scrollToElement(errorElement)
+          renderError(errorElement, ' - ' + data.errorMessage)
+        } else {
+          errorElement = $('#other-error')
+          scrollToElement(form)
           renderError(errorElement, data.errorMessage)
         }
       })

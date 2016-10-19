@@ -1,27 +1,27 @@
-progress {
-  margin-left: 10px;
-  width: 100px;
-  vertical-align: middle;
-}
-
-input:invalid {
-  border: 1px solid red;
-}
-
 .header {
   padding-top: 18rem;
   padding-bottom: 15rem;
   text-align: center;
-  border-bottom: 1px #eee solid;
+  border-bottom: 1px #ddd solid;
+  background-color: #d35400;
+  color: white;
 }
 
 .form-row {
   padding-top: 4rem;
 }
 
-#join {
-  background-color: #d35400;
-  color: white;
+input:invalid {
+  border-color: #f44336;
+}
+
+#other-error {
+  color: #f44336;
+  display: none;
+}
+
+.more-input {
+  display: block;
 }
 
 #join-button {
@@ -62,4 +62,3 @@ input:invalid {
   padding-top: 25px;
   border-radius: 2px;
 }
-

@@ -12,20 +12,20 @@ function renderError (el, message) {
 
 $(function () {
   window.addEventListener('submit', function (e) {
-    var requiredMatched = true
     e.preventDefault()
-    var inputs = document.querySelectorAll('input[data-required]')
-    var githubUsername = document.querySelector('#githubUsername')
-    Array.prototype.slice.call(inputs).forEach(function (el) {
-      if (el.getAttribute('pattern') ? !(new RegExp(el.getAttribute('pattern')).test(el.value)) : el.value === '') {
-        e.stopPropagation()
+    var requiredMatched = true
+    var inputs = $('input[data-required]')
+    var githubUsername = $('#githubUsername').get(0)
+
+    inputs.each(function (i, el) {
+      if (!el.checkValidity() || el.value === '') {
         el.setAttribute('required', true)
         requiredMatched = false
+        scrollToElement(form)
       }
     })
 
-    if (githubUsername.value !== '' && !(new RegExp(githubUsername.getAttribute('pattern')).test(githubUsername.value))) {
-      e.stopPropagation()
+    if (githubUsername.value !== '' && !githubUsername.checkValidity()) {
       requiredMatched = false
     }
 

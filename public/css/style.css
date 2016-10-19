@@ -15,8 +15,11 @@ input:invalid {
   border-color: #f44336;
 }
 
-#other-error {
+.error {
   color: #f44336;
+}
+
+#other-error {
   display: none;
 }
 

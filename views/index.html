@@ -21,19 +21,19 @@
       <div class="row form-row">
         <div class="eight columns offset-by-two">
           <label for="firstName">*First Name</label>
-          <input class="u-full-width" type="text" placeholder="Daniel" name="firstName" id="firstName" pattern="^[a-zA-Z\u00C0-\u017F' -]+$" data-required>
+          <input class="u-full-width" type="text" placeholder="Daniel" name="firstName" id="firstName" pattern="[a-zA-Z\u00C0-\u017F' -]+" maxlength="35" data-required>
         </div>
       </div>
       <div class="row form-row">
         <div class="eight columns offset-by-two">
           <label for="lastName">*Last Name</label>
-          <input class="u-full-width" type="text" placeholder="Awai" name="lastName" id="lastName" pattern="^[a-zA-Z\u00C0-\u017F' -]+$" data-required>
+          <input class="u-full-width" type="text" placeholder="Awai" name="lastName" id="lastName" pattern="[a-zA-Z\u00C0-\u017F' -]+" maxlength="35" data-required>
         </div>
       </div>
       <div class="row form-row">
         <div class="eight columns offset-by-two">
-          <label for="email">*Email<span></span></label>
-          <input class="u-full-width" type="email" placeholder="daniel@awai.com" name="email" id="email" pattern="^[\w.+-]*\w+@[\w-]+(\.[\w-]+)+$" data-required>
+          <label for="email">*Email<span class="error"></span></label>
+          <input class="u-full-width" type="email" placeholder="daniel@awai.com" name="email" id="email" pattern="[\w.+-]*\w+@[\w-]+(\.[\w-]+)+" data-required>
           <label>
             <input type="checkbox" name="mailchimp" id="mailchimp" checked><small> Subscribe to dvcoders mailing list: meeting updates & events</small>
           </label>
@@ -41,12 +41,12 @@
       </div>
       <div class="row form-row">
         <div class="eight columns offset-by-two">
-          <label for="githubUsername">Github Username<span></span></label>
-          <input class="u-full-width" type="text" placeholder="l33t-h4x0r" id="githubUsername" name="githubUsername" pattern="^[a-zA-Z0-9-]*$">
+          <label for="githubUsername">Github Username<span class="error"></span></label>
+          <input autocapitalize="off" class="u-full-width" type="text" placeholder="l33t-h4x0r" id="githubUsername" name="githubUsername" pattern="[a-zA-Z0-9-]*" maxlength="35">
         </div>
       </div>
       <div class="row form-row">
-        <div class="eight columns offset-by-two" id="other-error"></div>
+        <div class="eight columns offset-by-two error" id="other-error"></div>
       </div>
       <hr>
 

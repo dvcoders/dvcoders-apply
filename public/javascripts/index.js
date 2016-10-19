@@ -6,7 +6,6 @@ function scrollToElement (element) {
 }
 
 function renderError (el, message) {
-  console.log(message)
   el.text(message)
   el.css({
     color: '#d35400',

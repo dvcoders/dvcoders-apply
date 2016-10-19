@@ -48,15 +48,17 @@ $(function () {
         var data = JSON.parse(res.responseText)
 
         var errorElement
-        if (!data.success && !data.emailValid) {
-          errorElement = $('label[for=email] span')
-          console.log(data.errorMessage)
-          scrollToElement(errorElement, data.errorMessage)
-          renderError(errorElement, data.errorMessage)
-        } else if (!data.success && !data.githubValid) {
-          errorElement = $('label[for=githubUsername] span')
-          console.log(data.errorMessage)
+        if (!data.emailValid) {
+          errorElement = $('label[for=email] .error')
           scrollToElement(errorElement)
+          renderError(errorElement, ' - ' + data.errorMessage)
+        } else if (!data.githubValid) {
+          errorElement = $('label[for=githubUsername] .error')
+          scrollToElement(errorElement)
+          renderError(errorElement, ' - ' + data.errorMessage)
+        } else {
+          errorElement = $('#other-error')
+          scrollToElement(form)
           renderError(errorElement, data.errorMessage)
         }
       })

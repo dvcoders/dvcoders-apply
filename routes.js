@@ -29,36 +29,41 @@ module.exports = (app, logger) => {
   // The form API call
   app.post('/join', (req, res, next) => {
     // Github actions
-    logger.info(`Request body ${JSON.stringify(req.body)}`)
+    logger.info('Request body', req.body)
     let response = JSON.parse(ajaxResponse) // Get a copy
     let githubUsername = req.body.githubUsername
+
     if (githubUsername === '') {
       next()
-    } else {
-      addToTeam(githubUsername, (err, statusCode) => {
-        if (err) {
-          logger.error(err)
-          res.status(500).end()
-        } else if (statusCode === 404) {
-          // Username could not be found
-          response.success = false
-          response.githubValid = false
-          response.errorMessage = 'Github username could not be found'
-          logger.info(response.errorMessage)
-          return res.status(400).json(response)
-        } else if (statusCode === 200) {
-          logger.info('Successfully invited user to GitHub')
-          next() // Move to saving in Mongo
-        } else {
-          // if api sends back anything other than 200 or 404, something must be wrong with our server or Github's API
-          logger.error(`Github API responded with ${statusCode}`)
-          response.success = false
-          response.githubValid = false
-          response.errorMessage = 'Github username error'
-          return res.status(500).json(response)
-        }
-      })
+      return
     }
+
+    addToTeam(githubUsername, (err, statusCode) => {
+      if (err) {
+        logger.error(`Github request error: ${err}`)
+        response.success = false
+        response.githubValid = false
+        response.errorMessage = 'Github error'
+        res.status(500).json(response)
+      } else if (statusCode === 404) {
+        // Username could not be found
+        response.success = false
+        response.githubValid = false
+        response.errorMessage = 'Github username could not be found'
+        logger.info(response.errorMessage)
+        res.status(400).json(response)
+      } else if (statusCode === 200) {
+        logger.info('Successfully invited user to GitHub')
+        next() // Move to saving in Mongo
+      } else {
+        // if api sends back anything other than 200 or 404, something must be wrong with our server or Github's API
+        logger.error(`Github API responded with ${statusCode}`)
+        response.success = false
+        response.githubValid = false
+        response.errorMessage = 'Github API error'
+        res.status(500).json(response)
+      }
+    })
   }, (req, res, next) => {
     // Database actions w/ Mongoose
     let response = JSON.parse(ajaxResponse) // Get a copy
@@ -91,17 +96,18 @@ module.exports = (app, logger) => {
           return user.save()
         })
       } else {
-        logger.info('Updated existing user')
+        logger.info('Updated existing user in MongoDB')
       }
     }).then((user) => {
-      // Successful save and invitation
-      logger.info('Successfully saved user')
+      // Successful save
+      logger.info('Successfully saved user in MongoDB')
       next() // Move to addToSlack
     }, (err) => {
-      logger.error(err)
+      // Most likely validation error
+      logger.error(`MongoDB: ${err.name}: ${err.message}`)
       response.success = false
-      response.errorMessage = Object.keys(err.errors).map((key) => err.errors[key].message).join(', ')
-      return res.status(500).json(response)
+      response.errorMessage = Object.keys(err.errors).map((key) => err.errors[key].message).join(' ')
+      res.status(400).json(response)
     })
   }, (req, res, next) => {
     // Slack actions
@@ -109,7 +115,7 @@ module.exports = (app, logger) => {
     addToSlack(req.body.email, (err, statusCode, invited) => {
       response.slackSuccess = !err && statusCode === 200
       response.slackInvited = invited
-      return res.status(statusCode).json(response)
+      res.status(statusCode).json(response)
     })
   })
 
@@ -129,18 +135,17 @@ module.exports = (app, logger) => {
     let ghReq = https.request(options, (ghRes) => {
       cb(null, ghRes.statusCode)
     })
-    ghReq.end()
     ghReq.on('error', (e) => {
-      logger.error(`Github request error: ${e}`)
       cb(e, 500)
     })
+    ghReq.end()
   }
 
   let addToSlack = (email, cb) => {
     // sends an invite to join the dvcoders slack channel
     // (error, statusCode, invited) is passed to the callback, but note that
     // slack sends a 200 even if the user has already been invited.
-    // also not this api endpoint is "undocumented" and subject to change
+    // also note this api endpoint is "undocumented" and subject to change
     let data = querystring.stringify({
       email: email,
       token: config.slack.token,

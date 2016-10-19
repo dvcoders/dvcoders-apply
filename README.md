@@ -41,16 +41,18 @@ brew install mongodb
 brew services start mongodb
 ```
 
-*For development work:*
+### Running
 
-Use [`nodemon`](http://nodemon.io/) to have the server restart automatically when changes are made.
+#### For development work
+
+Use [`nodemon`](http://nodemon.io/) to restart the server automatically when changes are made.
 
 ```bash
 npm install -g nodemon
 nodemon app.js
 ```
 
-*For production deployment:*
+#### For production deployment
 
 Use [`pm2`](http://pm2.keymetrics.io/) to handle log management and server crashes.
 

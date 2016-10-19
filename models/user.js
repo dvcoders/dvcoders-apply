@@ -8,25 +8,25 @@ let userSchema = new Schema({
     type: String,
     maxLength: 35,
     required: true,
-    match: [/^[a-zA-Z\u00C0-\u017F' -]+$/, 'Please enter valid name characters']
+    match: [/^[a-zA-Z\u00C0-\u017F' -]+$/, 'Please enter valid name characters.']
   },
   lastName: {
     type: String,
     maxLength: 35,
     required: true,
-    match: [/^[a-zA-Z\u00C0-\u017F' -]+$/, 'Please enter valid name characters']
+    match: [/^[a-zA-Z\u00C0-\u017F' -]+$/, 'Please enter valid name characters.']
   },
   email: {
     type: String,
     required: true,
     unique: true,
-    match: [/^[\w.+-]*\w+@[\w-]+(\.[\w-]+)+$/, 'Please enter a valid email']
+    match: [/^[\w.+-]*\w+@[\w-]+(\.[\w-]+)+$/, 'Please enter a valid email.']
   },
   mailchimp: Boolean,
   github: {
     type: String,
     maxLength: 35,
-    match: [/^[a-zA-Z0-9-]+$/, 'Please enter valid username characters']
+    match: [/^[a-zA-Z0-9-]+$/, 'Please enter valid username characters.']
   },
   description: {
     type: Schema.ObjectId,

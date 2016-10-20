@@ -7,12 +7,14 @@ let querystring = require('querystring')
 let User = mongoose.model('User')
 let Survey = mongoose.model('Survey')
 
-let ajaxResponse = {
+mongoose.Promise = require('bluebird')
+
+let ajaxResponse = JSON.stringify({
   'success': true,
   'emailValid': true,
   'githubValid': true,
   'errorMessage': ''
-}
+})
 
 module.exports = (app, logger) => {
   // The main page
@@ -27,38 +29,45 @@ module.exports = (app, logger) => {
   // The form API call
   app.post('/join', (req, res, next) => {
     // Github actions
+    logger.info('Request body', req.body)
+    let response = JSON.parse(ajaxResponse) // Get a copy
     let githubUsername = req.body.githubUsername
+
     if (githubUsername === '') {
       next()
-    } else {
-      addToTeam(githubUsername, (err, statusCode) => {
-        if (err) {
-          logger.error(err)
-          res.status(500).end()
-        } else if (statusCode === 404) {
-          // Username could not be found
-          ajaxResponse.success = false
-          ajaxResponse.githubValid = false
-          ajaxResponse.errorMessage = 'Github username could not be found'
-          logger.info(ajaxResponse.errorMessage)
-          return res.status(400).json(ajaxResponse)
-        } else if (statusCode === 200) {
-          logger.info('Successfully invited user to GitHub')
-          next()
-        } else {
-          // if api sends back anything other than 200 or 404, something must be wrong with our server or Github's API
-          logger.error(`Github API responded with ${statusCode}`)
-          ajaxResponse.success = false
-          ajaxResponse.githubValid = false
-          ajaxResponse.errorMessage = 'Github username error'
-          return res.status(500).json(ajaxResponse)
-        }
-      })
+      return
     }
+
+    addToTeam(githubUsername, (err, statusCode) => {
+      if (err) {
+        logger.error(`Github request error: ${err}`)
+        response.success = false
+        response.githubValid = false
+        response.errorMessage = 'Github error'
+        res.status(500).json(response)
+      } else if (statusCode === 404) {
+        // Username could not be found
+        response.success = false
+        response.githubValid = false
+        response.errorMessage = 'Github username could not be found'
+        logger.info(response.errorMessage)
+        res.status(400).json(response)
+      } else if (statusCode === 200) {
+        logger.info('Successfully invited user to GitHub')
+        next() // Move to saving in Mongo
+      } else {
+        // if api sends back anything other than 200 or 404, something must be wrong with our server or Github's API
+        logger.error(`Github API responded with ${statusCode}`)
+        response.success = false
+        response.githubValid = false
+        response.errorMessage = 'Github API error'
+        res.status(500).json(response)
+      }
+    })
   }, (req, res, next) => {
-    // Databse actions w/ Mongoose
+    // Database actions w/ Mongoose
+    let response = JSON.parse(ajaxResponse) // Get a copy
     let body = req.body
-    logger.info(`Request body ${JSON.stringify(body)}`)
 
     let userObj = {
       firstName: body.firstName,
@@ -87,25 +96,26 @@ module.exports = (app, logger) => {
           return user.save()
         })
       } else {
-        logger.info('Updated exisitng user')
-        next()
+        logger.info('Updated existing user in MongoDB')
       }
     }).then((user) => {
-      // Successful save and invitation
-      logger.info('Successfully saved new user')
+      // Successful save
+      logger.info('Successfully saved user in MongoDB')
       next() // Move to addToSlack
     }, (err) => {
-      logger.error(err)
-      ajaxResponse.success = false
-      ajaxResponse.errorMessage = Object.keys(err.errors).map((key) => err.errors[key].message).join(', ')
-      return res.status(500).json(ajaxResponse)
+      // Most likely validation error
+      logger.error(`MongoDB: ${err.name}: ${err.message}`)
+      response.success = false
+      response.errorMessage = Object.keys(err.errors).map((key) => err.errors[key].message).join(' ')
+      res.status(400).json(response)
     })
   }, (req, res, next) => {
     // Slack actions
+    let response = JSON.parse(ajaxResponse) // Get a copy
     addToSlack(req.body.email, (err, statusCode, invited) => {
-      ajaxResponse.slackSuccess = !err && statusCode === 200
-      ajaxResponse.slackInvited = invited
-      return res.status(statusCode).json(ajaxResponse)
+      response.slackSuccess = !err && statusCode === 200
+      response.slackInvited = invited
+      res.status(statusCode).json(response)
     })
   })
 
@@ -125,18 +135,17 @@ module.exports = (app, logger) => {
     let ghReq = https.request(options, (ghRes) => {
       cb(null, ghRes.statusCode)
     })
-    ghReq.end()
     ghReq.on('error', (e) => {
-      logger.error(`Github request error: ${e}`)
       cb(e, 500)
     })
+    ghReq.end()
   }
 
   let addToSlack = (email, cb) => {
     // sends an invite to join the dvcoders slack channel
     // (error, statusCode, invited) is passed to the callback, but note that
     // slack sends a 200 even if the user has already been invited.
-    // also not this api endpoint is "undocumented" and subject to change
+    // also note this api endpoint is "undocumented" and subject to change
     let data = querystring.stringify({
       email: email,
       token: config.slack.token,
@@ -161,8 +170,8 @@ module.exports = (app, logger) => {
       })
       res.on('end', () => {
         let resBody = JSON.parse(body)
-        logger.info('Slack response:', resBody)
-        if (res.status === 200 && !resBody.ok && (resBody.error === 'already_invited' || resBody.error === 'already_in_team')) {
+        logger.info('Slack response:', res.statusCode, resBody)
+        if (res.statusCode === 200 && !resBody.ok && (resBody.error === 'already_invited' || resBody.error === 'already_in_team')) {
           cb(null, 200, true)
         } else {
           cb(null, res.statusCode, false)

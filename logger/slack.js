@@ -33,7 +33,6 @@ util.inherits(Slack, winston.Transport)
 //
 Slack.prototype.name = 'Slack'
 
-winston.transports.Slack = Slack
 //
 // ### function log (level, msg, [meta], callback)
 // #### @level {string} Level at which to log the message.

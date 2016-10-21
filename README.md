@@ -26,6 +26,7 @@ Then you need to create a [`.env`](https://github.com/motdotla/dotenv) file for 
 * `GITHUB_USER_AGENT` - Your Github username
 * `SLACK_TOKEN` - [Slack token](https://api.slack.com/docs/oauth-test-tokens)
 * `SLACK_WEBHOOK_URI` - [Slack webhook URI](https://api.slack.com/incoming-webhooks)
+
 Example:
 
 ```text

@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ 'extended': true }))
 app.use(bodyParser.json())
 
 // Create the logging utility
-let logger = require('./logger.js')()
+let logger = require('./logger/logger.js')()
 
 // Pass express data through the logger
 app.use(require('morgan')('dev', {

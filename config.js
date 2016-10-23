@@ -22,5 +22,6 @@ exports.github = {
 }
 
 exports.slack = {
-  'token': process.env.SLACK_TOKEN || null
+  'token': process.env.SLACK_TOKEN || null,
+  'webhookUri': process.env.SLACK_WEBHOOK_URI || null
 }

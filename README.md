@@ -25,6 +25,7 @@ Then you need to create a [`.env`](https://github.com/motdotla/dotenv) file for 
 * `GITHUB_API_KEY` - [Github API key](https://github.com/settings/tokens)
 * `GITHUB_USER_AGENT` - Your Github username
 * `SLACK_TOKEN` - [Slack token](https://api.slack.com/docs/oauth-test-tokens)
+* `SLACK_WEBHOOK_URI` - [Slack webhook URI](https://api.slack.com/incoming-webhooks)
 
 Example:
 
@@ -32,6 +33,7 @@ Example:
 GITHUB_API_KEY=9f869b245f49641b12137cb202ccb82c3f870eb9
 GITHUB_USER_AGENT=dvcoders
 SLACK_TOKEN=xoxp-1495209272-1796258573-9288732744-1b9d2f09
+SLACK_WEBHOOK_URI=https://hooks.slack.com/services/X0AB9CDE0/A0B12CD3E/a6Bcde3fGh45iJKlmnOp
 ```
 
 Make sure you have MongoDB running. On OSX, you can run:

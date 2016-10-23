@@ -1,7 +1,7 @@
 {
-  "name": "dvcoders-backend",
+  "name": "dvcoders-apply",
   "version": "0.2.0",
-  "description": "The dvcoders backend",
+  "description": "The dvcoders apply website and server",
   "main": "app.js",
   "scripts": {
     "test": "standard && mocha",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dvcoders/dvcoders-backend.git"
+    "url": "git+https://github.com/dvcoders/dvcoders-apply.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dvcoders/dvcoders-backend/issues"
+    "url": "https://github.com/dvcoders/dvcoders-apply/issues"
   },
-  "homepage": "https://github.com/dvcoders/dvcoders-backend#readme",
+  "homepage": "https://github.com/dvcoders/dvcoders-apply#readme",
   "dependencies": {
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",

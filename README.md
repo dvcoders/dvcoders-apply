@@ -1,7 +1,7 @@
-## dvcoders-backend
+## dvcoders-apply
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-Our backend server (Node.js + MongoDB)
+Our apply website and server (Node.js + MongoDB)
 
 ### Requirements
 * [Node.js & NPM](https://nodejs.org/en/)
@@ -15,8 +15,8 @@ Our backend server (Node.js + MongoDB)
 Run from your terminal:
 
 ```bash
-git clone git@github.com:dvcoders/dvcoders-backend.git
-cd dvcoders-backend
+git clone git@github.com:dvcoders/dvcoders-apply.git
+cd dvcoders-apply
 npm install
 ```
 
@@ -63,7 +63,7 @@ npm install -g pm2
 cat <<EOF > server.json
 {
   "apps": [{
-    "name": "dvcoders-backend",
+    "name": "dvcoders-apply",
     "script": "app.js",
     "watch": true
   }]

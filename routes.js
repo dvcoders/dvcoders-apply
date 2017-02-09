@@ -72,6 +72,7 @@ module.exports = (app, logger) => {
     let userObj = {
       firstName: body.firstName,
       lastName: body.lastName,
+      studentId: body.studentId,
       email: body.email,
       mailchimp: !!body.mailchimp, // Convert to boolean if not already
       github: body.githubUsername

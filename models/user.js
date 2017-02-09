@@ -16,6 +16,11 @@ let userSchema = new Schema({
     required: true,
     match: [/^[a-zA-Z\u00C0-\u017F' -]+$/, 'Please enter valid name characters.']
   },
+  studentId: {
+    type: Number,
+    required: true,
+    match: [/^\d{7}$/, 'Please enter valid Student ID.']
+  },
   email: {
     type: String,
     required: true,

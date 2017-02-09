@@ -32,6 +32,12 @@
       </div>
       <div class="row form-row">
         <div class="eight columns offset-by-two">
+          <label for="studentId">*Student ID</label>
+          <input class="u-full-width" type="text" placeholder="1234567" name="studentId" id="studentId" pattern="\d{7}" maxlength="35" data-required>
+        </div>
+      </div>
+      <div class="row form-row">
+        <div class="eight columns offset-by-two">
           <label for="email">*Email<span class="error"></span></label>
           <input class="u-full-width" type="email" placeholder="daniel@awai.com" name="email" id="email" pattern="[\w.+-]*\w+@[\w-]+(\.[\w-]+)+" data-required>
           <label>

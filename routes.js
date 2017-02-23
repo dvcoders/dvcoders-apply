@@ -31,7 +31,7 @@ module.exports = (app, logger) => {
     // Github actions
     logger.info('Request body', req.body)
     let response = JSON.parse(ajaxResponse) // Get a copy
-    let githubUsername = req.body.githubUsername
+    let githubUsername = req.body.githubUsername || ''
 
     if (githubUsername === '') {
       next()
@@ -70,12 +70,12 @@ module.exports = (app, logger) => {
     let body = req.body
 
     let userObj = {
-      firstName: body.firstName,
-      lastName: body.lastName,
-      studentId: body.studentId,
-      email: body.email,
+      firstName: body.firstName || '',
+      lastName: body.lastName || '',
+      studentId: body.studentId || '',
+      email: (body.email || '').toLowerCase(),
       mailchimp: !!body.mailchimp, // Convert to boolean if not already
-      github: body.githubUsername
+      github: body.githubUsername || ''
     }
 
     // Search for the user email.

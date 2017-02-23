@@ -73,7 +73,7 @@ module.exports = (app, logger) => {
       firstName: body.firstName,
       lastName: body.lastName,
       studentId: body.studentId,
-      email: body.email,
+      email: body.email.toLowerCase(),
       mailchimp: !!body.mailchimp, // Convert to boolean if not already
       github: body.githubUsername
     }
